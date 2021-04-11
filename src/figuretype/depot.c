@@ -220,6 +220,11 @@ static int is_order_condition_satisfied(building *depot, order *order)
     if (!order->src_storage_id || !order->dst_storage_id || !order->resource_type) {
         return 0;
     }
+
+    if (order->condition.condition_type == ORDER_CONDITION_NEVER) {
+        return 0;
+    }
+
     building *src = building_get(order->src_storage_id);
     building *dst = building_get(order->dst_storage_id);
     if (!src || !dst) {
@@ -237,6 +242,7 @@ static int is_order_condition_satisfied(building *depot, order *order)
         return 0;
     }
 
+    // fail if no path
     // if we decide to use a different terrain type for the cart, this needs to be updated as well
     map_point src_access_point;
     map_point dst_access_point;
@@ -247,7 +253,24 @@ static int is_order_condition_satisfied(building *depot, order *order)
         return 0;
     }
 
-    return 1;
+    int src_amount = src->type == BUILDING_GRANARY ?
+        building_granary_resource_amount(order->resource_type, src) :
+        building_warehouse_get_amount(src, order->resource_type);
+    int dst_amount = dst->type == BUILDING_GRANARY ?
+        building_granary_resource_amount(order->resource_type, dst) :
+        building_warehouse_get_amount(dst, order->resource_type);
+    if (src_amount == 0) {
+        return 0;
+    }
+
+    switch (order->condition.condition_type) {
+    case ORDER_CONDITION_SOURCE_HAS_MORE_THAN:
+        return src_amount >= order->condition.threshold;
+    case ORDER_CONDITION_DESTINATION_HAS_LESS_THAN:
+        return dst_amount < order->condition.threshold;
+    default:
+        return 1;
+    }
 }
 
 static int get_storage_road_access(building *b, map_point *point)
