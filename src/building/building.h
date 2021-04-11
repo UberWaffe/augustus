@@ -161,13 +161,6 @@ typedef struct building {
         } warehouse;
         struct {
             order order1;
-            order order2;
-            order order3;
-            order order4;
-            short figure_id1;
-            short figure_id2;
-            short figure_id3;
-            short figure_id4;
         } depot;
     } data;
     int tax_income_or_storage;

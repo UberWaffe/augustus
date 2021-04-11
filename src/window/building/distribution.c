@@ -1547,7 +1547,7 @@ static const translation_key TRANSLATION_KEY_ORDER_CONDITION[4] = {
 static generic_button depot_order_buttons[] = {
     {100, 0, 26, 26, order_set_resource, button_none, 1, 0},
     {100, 56, 284, 22, order_set_source, button_none, 2, 0},
-    {100, 84, 284, 22, order_set_destination, button_none, 3, 0},
+    {100, 82, 284, 22, order_set_destination, button_none, 3, 0},
     {100, 30, 284, 22, order_set_condition_type, button_none, 4, 0},
     {384, 30, 32, 22, order_set_condition_threshold, button_none, 5, 0},
 };
@@ -1715,7 +1715,7 @@ static generic_button depot_select_storage_buttons[] = {
 void draw_depot_select_source_destination(building_info_context *c) {
     int y_offset = window_building_get_vertical_offset(c, 28);
 
-    scrollbar.x = c->x_offset + 16 * (c->width_blocks - 2) - 24;
+    scrollbar.x = c->x_offset + 16 * (c->width_blocks - 2) - 26;
     scrollbar.y = y_offset + 46;
     scrollbar_draw(&scrollbar);
 
@@ -1730,10 +1730,12 @@ void draw_depot_select_source_destination(building_info_context *c) {
                 offset--;
             } else {
                 button_border_draw(c->x_offset + 18, y_offset + 46 + ROW_HEIGHT * index,
-                    16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? SCROLL_BUTTON_WIDTH : 0),
+                    16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
                     22, data.storage_building_focus_button_id == index + 1);
                 text_draw_label_and_number_centered(translation_for(get_building_translation(b)),
-                    b->id, "", c->x_offset + 32, y_offset + 52 + ROW_HEIGHT * index, 16 * (c->width_blocks - 2) - 4, FONT_SMALL_PLAIN, 0);
+                    b->id, "", c->x_offset + 32, y_offset + 52 + ROW_HEIGHT * index,
+                    16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
+                    FONT_SMALL_PLAIN, 0);
                 index++;
             }
         }
@@ -1757,7 +1759,7 @@ int handle_mouse_depot_select_source_destination(const mouse *m, building_info_c
         depot_select_storage_buttons[i].x = 0;
         depot_select_storage_buttons[i].y = 22 * i;
         depot_select_storage_buttons[i].width = 16 * (c->width_blocks - 2) - 4 -
-            (scrollbar.max_scroll_position > 0 ? SCROLL_BUTTON_WIDTH : 0);
+            (scrollbar.max_scroll_position > 0 ? 39 : 0);
         depot_select_storage_buttons[i].height = ROW_HEIGHT;
         depot_select_storage_buttons[i].left_click_handler = button_none;
         depot_select_storage_buttons[i].parameter1 = 0;

@@ -851,7 +851,7 @@ static translation_string all_strings[] = {
     { TR_ORDER_CONDITION_ALWAYS, "Always" },
     { TR_ORDER_CONDITION_NEVER, "Never" },
     { TR_ORDER_CONDITION_SOURCE_HAS_MORE_THAN, "Source has more than" },
-    { TR_ORDER_CONDITION_DESTINATION_HAS_LESS_THAN, "Destiantion has less than" },
+    { TR_ORDER_CONDITION_DESTINATION_HAS_LESS_THAN, "Destination has less than" },
     { TR_BUILDING_INFO_DEPOT_DELIVER, "Deliver" },
     { TR_BUILDING_INFO_DEPOT_CONDITION, "When" },
     { TR_BUILDING_INFO_DEPOT_SOURCE, "Source" },
