@@ -29,8 +29,8 @@ static void set_cart_graphic(figure *f);
 static int get_storage_road_access(building *b, map_point *point);
 static void dump_goods(figure *f);
 static int is_order_condition_satisfied(building *depot, order *order);
-static int storage_remove_resource(building* b, int resource, int amount);
-static int storage_add_resource(building* b, int resource, int amount);
+static int storage_remove_resource(building *b, int resource, int amount);
+static int storage_add_resource(building *b, int resource, int amount);
 
 void figure_depot_cartpusher_action(figure *f)
 {
@@ -98,7 +98,7 @@ void figure_depot_cartpusher_action(figure *f)
                 f->resource_id = f->current_order.resource_type;
                 f->loads_sold_or_carrying = capacity - remaining_capacity;
 
-                building* dst = building_get(f->current_order.dst_storage_id);
+                building *dst = building_get(f->current_order.dst_storage_id);
                 map_point road_access;
                 get_storage_road_access(dst, &road_access);
                 f->action_state = FIGURE_ACTION_233_DEPOT_CART_HEADING_TO_DESTINATION;
@@ -170,7 +170,7 @@ void figure_depot_cartpusher_action(figure *f)
     update_image(f);
 }
 
-static void set_cart_graphic(figure* f)
+static void set_cart_graphic(figure *f)
 {
     if (f->loads_sold_or_carrying == 0) {
         f->cart_image_id = image_group(GROUP_FIGURE_CARTPUSHER_CART);
@@ -195,7 +195,7 @@ static int cartpusher_speed()
     return 1;
 }
 
-static void update_image(figure* f)
+static void update_image(figure *f)
 {
     int dir = figure_image_normalize_direction(
         f->direction < 8 ? f->direction : f->previous_tile_direction);
