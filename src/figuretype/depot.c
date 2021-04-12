@@ -255,10 +255,10 @@ static int is_order_condition_satisfied(building *depot, order *order)
     }
 
     int src_amount = src->type == BUILDING_GRANARY ?
-        building_granary_resource_amount(order->resource_type, src) :
+        building_granary_resource_amount(order->resource_type, src) / 100 :
         building_warehouse_get_amount(src, order->resource_type);
     int dst_amount = dst->type == BUILDING_GRANARY ?
-        building_granary_resource_amount(order->resource_type, dst) :
+        building_granary_resource_amount(order->resource_type, dst) / 100 :
         building_warehouse_get_amount(dst, order->resource_type);
     if (src_amount == 0) {
         return 0;
