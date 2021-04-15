@@ -19,6 +19,8 @@
 #include "map/routing_terrain.h"
 #include "figure/image.h"
 
+#define FIGURE_REROUTE_DESTINATION_TICKS 120
+
 static const int CART_OFFSET_MULTIPLE_LOADS_FOOD[] = { 0, 0, 8, 16, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 static const int CART_OFFSET_MULTIPLE_LOADS_NON_FOOD[] = { 0, 0, 0, 0, 0, 8, 0, 16, 24, 32, 40, 48, 56, 64, 72, 80 };
 static const int CART_OFFSET_8_LOADS_FOOD[] = { 0, 40, 48, 56, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -38,6 +40,7 @@ void figure_depot_cartpusher_action(figure *f)
     f->cart_image_id = 0;
     int speed_factor = cartpusher_speed();
     int percentage_speed = 0;
+    int road_network_id = map_road_network_get(f->grid_offset);
     f->terrain_usage = TERRAIN_USAGE_ROADS;
     building *b = building_get(f->building_id);
 
@@ -81,6 +84,9 @@ void figure_depot_cartpusher_action(figure *f)
         } else if (f->direction == DIR_FIGURE_LOST) {
             f->action_state = FIGURE_ACTION_236_DEPOT_CART_PUSHER_CANCEL_ORDER;
             f->wait_ticks = 0;
+        } else if (f->direction == DIR_FIGURE_REROUTE) {
+            figure_route_remove(f);
+            f->wait_ticks = 0;
         }
         break;
     case FIGURE_ACTION_232_DEPOT_CART_PUSHER_AT_SOURCE:
@@ -118,6 +124,9 @@ void figure_depot_cartpusher_action(figure *f)
             f->wait_ticks = 0;
         } else if (f->direction == DIR_FIGURE_LOST) {
             f->action_state = FIGURE_ACTION_236_DEPOT_CART_PUSHER_CANCEL_ORDER;
+            f->wait_ticks = 0;
+        } else if (f->direction == DIR_FIGURE_REROUTE) {
+            figure_route_remove(f);
             f->wait_ticks = 0;
         }
         break;
@@ -255,10 +264,10 @@ static int is_order_condition_satisfied(building *depot, order *order)
     }
 
     int src_amount = src->type == BUILDING_GRANARY ?
-        building_granary_resource_amount(order->resource_type, src) / 100 :
+        building_granary_resource_amount(order->resource_type, src) / RESOURCE_GRANARY_ONE_LOAD :
         building_warehouse_get_amount(src, order->resource_type);
     int dst_amount = dst->type == BUILDING_GRANARY ?
-        building_granary_resource_amount(order->resource_type, dst) / 100 :
+        building_granary_resource_amount(order->resource_type, dst) / RESOURCE_GRANARY_ONE_LOAD :
         building_warehouse_get_amount(dst, order->resource_type);
     if (src_amount == 0) {
         return 0;
