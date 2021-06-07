@@ -1,8 +1,7 @@
 #ifndef FIGURE_FIGURE_H
 #define FIGURE_FIGURE_H
 
-// TODO why?
-#include <building/depot.h>
+#include "building/building.h"
 #include "core/buffer.h"
 #include "core/direction.h"
 #include "figure/action.h"

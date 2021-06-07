@@ -1,12 +1,28 @@
 #ifndef BUILDING_BUILDING_H
 #define BUILDING_BUILDING_H
 
-// TODO why?
-#include <building/depot.h>
 #include "building/type.h"
 #include "core/buffer.h"
 #include "core/time.h"
+#include "game/resource.h"
 #include "translation/translation.h"
+
+typedef enum order_condition_type {
+    ORDER_CONDITION_NEVER,
+    ORDER_CONDITION_ALWAYS,
+    ORDER_CONDITION_SOURCE_HAS_MORE_THAN,
+    ORDER_CONDITION_DESTINATION_HAS_LESS_THAN
+} order_condition_type;
+
+typedef struct order {
+    resource_type resource_type;
+    int src_storage_id;
+    int dst_storage_id;
+    struct {
+        order_condition_type condition_type;
+        int threshold;
+    } condition;
+} order;
 
 typedef struct building {
     int id;
