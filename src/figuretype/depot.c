@@ -96,7 +96,7 @@ void figure_depot_cartpusher_action(figure *f)
             building *src = building_get(f->current_order.src_storage_id);
 
             // TODO upgradable?
-            int capacity = resource_is_food(f->current_order.resource_type) ? 8 : 4;
+            int capacity = resource_is_food(f->current_order.resource_type) ? 16 : 4;
             int remaining_capacity = storage_remove_resource(src, f->current_order.resource_type, capacity);
             if (remaining_capacity == capacity) {
                 // no available goods, wait at the building
