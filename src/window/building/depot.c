@@ -62,11 +62,11 @@ static int storage_buildings_count() {
 #define ROW_HEIGHT 22
 #define MAX_VISIBLE_ROWS 15
 static void on_scroll(void);
-static scrollbar_type scrollbar = { 0, 0, ROW_HEIGHT * MAX_VISIBLE_ROWS, on_scroll, 4 };
+static scrollbar_type scrollbar = { 0, 0, ROW_HEIGHT * MAX_VISIBLE_ROWS, 432, MAX_VISIBLE_ROWS, on_scroll, 0, 4 };
 void window_building_depot_init()
 {
     int total = storage_buildings_count();
-    scrollbar_init(&scrollbar, 0, total - MAX_VISIBLE_ROWS);
+    scrollbar_init(&scrollbar, 0, total);
 }
 
 static void on_scroll(void)
