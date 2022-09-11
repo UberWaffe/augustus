@@ -222,7 +222,7 @@ static translation_string all_strings[] = {
     {TR_BUILDING_WORK_CAMP, "Work camp" },
     {TR_BUILDING_WORK_CAMP_DESC, "Laborers gather here to transport materials to construction sites." },
     {TR_BUILDING_DEPOT, "Cart depot"},
-    {TR_BUILDING_DEPOT_DESC, "Placeholder"},
+    {TR_BUILDING_DEPOT_DESC, "Cart depot sends out a cart to transfer goods between warehouses and granaries based on the order. The cart must return to the depot for maintenance before it accepts a new order."},
     {TR_BUILDING_NONE, "None"},
     {TR_HEADER_HOUSING, "Housing"},
     {TR_ADVISOR_HOUSING_ROOM, "City housing has room available for"},
