@@ -160,6 +160,9 @@ void figure_depot_cartpusher_action(figure *f)
             f->state = FIGURE_STATE_DEAD;
         } else if (f->direction == DIR_FIGURE_LOST) {
             f->state = FIGURE_STATE_DEAD;
+        } else if (f->direction == DIR_FIGURE_REROUTE) {
+            figure_route_remove(f);
+            f->wait_ticks = 0;
         }
         break;
     case FIGURE_ACTION_244_DEPOT_CART_PUSHER_CANCEL_ORDER:
