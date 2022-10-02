@@ -1191,14 +1191,14 @@ void window_building_info_depot_select_resource(void)
 void window_building_info_depot_toggle_condition_type(void)
 {
     building *b = building_get(context.building_id);
-    b->data.depot.order1.condition.condition_type = (b->data.depot.order1.condition.condition_type + 1) % 4;
+    b->data.depot.current_order.condition.condition_type = (b->data.depot.current_order.condition.condition_type + 1) % 4;
     window_invalidate();
 }
 
 void window_building_info_depot_toggle_condition_threshold(void)
 {
     building* b = building_get(context.building_id);
-    b->data.depot.order1.condition.threshold = (b->data.depot.order1.condition.threshold + 4) % 36;
+    b->data.depot.current_order.condition.threshold = (b->data.depot.current_order.condition.threshold + 4) % 36;
     window_invalidate();
 }
 

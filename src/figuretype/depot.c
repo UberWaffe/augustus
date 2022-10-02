@@ -60,7 +60,7 @@ void figure_depot_cartpusher_action(figure *f)
             f->state = FIGURE_STATE_DEAD;
         }
 
-        f->current_order = b->data.depot.order1;
+        f->current_order = b->data.depot.current_order;
         if (is_order_condition_satisfied(b, &f->current_order)) {
             building *src = building_get(f->current_order.src_storage_id);
             map_point road_access;

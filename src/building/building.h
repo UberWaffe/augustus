@@ -177,7 +177,7 @@ typedef struct building {
             short flag_frame;
         } warehouse;
         struct {
-            order order1;
+            order current_order;
         } depot;
     } data;
     int tax_income_or_storage;

@@ -88,11 +88,11 @@ void window_building_draw_depot(building_info_context *c)
 void window_building_draw_depot_foreground(building_info_context *c)
 {
     building *b = building_get(c->building_id);
-    building *src = building_get(b->data.depot.order1.src_storage_id);
-    building *dst = building_get(b->data.depot.order1.dst_storage_id);
+    building *src = building_get(b->data.depot.current_order.src_storage_id);
+    building *dst = building_get(b->data.depot.current_order.dst_storage_id);
 
-    if (!b->data.depot.order1.resource_type) {
-        b->data.depot.order1.resource_type = RESOURCE_WHEAT;
+    if (!b->data.depot.current_order.resource_type) {
+        b->data.depot.current_order.resource_type = RESOURCE_WHEAT;
     }
 
     int x_offset = c->x_offset + DEPOT_BUTTONS_X_OFFSET;
@@ -100,13 +100,13 @@ void window_building_draw_depot_foreground(building_info_context *c)
 
     text_draw(translation_for(TR_FIGURE_INFO_DEPOT_DELIVER), x_offset, y_offset + 8, FONT_SMALL_PLAIN, 0);
     depot_order_buttons[0].x = 100;
-    int image_id = image_group(GROUP_RESOURCE_ICONS) + b->data.depot.order1.resource_type +
-        resource_image_offset(b->data.depot.order1.resource_type, RESOURCE_IMAGE_ICON);
+    int image_id = image_group(GROUP_RESOURCE_ICONS) + b->data.depot.current_order.resource_type +
+        resource_image_offset(b->data.depot.current_order.resource_type, RESOURCE_IMAGE_ICON);
     button_border_draw(x_offset + depot_order_buttons[0].x, y_offset + depot_order_buttons[0].y,
         depot_order_buttons[0].width, depot_order_buttons[0].height, data.focus_button_id == 1);
     image_draw(image_id, x_offset + depot_order_buttons[0].x + 2, y_offset + depot_order_buttons[0].y + 2);
 
-    order_condition_type condition_type = b->data.depot.order1.condition.condition_type;
+    order_condition_type condition_type = b->data.depot.current_order.condition.condition_type;
     text_draw(translation_for(TR_BUILDING_INFO_DEPOT_CONDITION), x_offset, y_offset + depot_order_buttons[3].y + 6, FONT_SMALL_PLAIN, 0);
     button_border_draw(x_offset + depot_order_buttons[3].x, y_offset + depot_order_buttons[3].y,
         depot_order_buttons[3].width, depot_order_buttons[3].height, data.focus_button_id == 4);
@@ -115,7 +115,7 @@ void window_building_draw_depot_foreground(building_info_context *c)
     if (condition_type != ORDER_CONDITION_ALWAYS && condition_type != ORDER_CONDITION_NEVER) {
         button_border_draw(x_offset + depot_order_buttons[4].x, y_offset + depot_order_buttons[4].y,
             depot_order_buttons[4].width, depot_order_buttons[4].height, data.focus_button_id == 5);
-        text_draw_number_centered(b->data.depot.order1.condition.threshold,
+        text_draw_number_centered(b->data.depot.current_order.condition.threshold,
             x_offset + depot_order_buttons[4].x, y_offset + depot_order_buttons[4].y + 6, depot_order_buttons[4].width, FONT_SMALL_PLAIN);
     }
 
@@ -277,14 +277,14 @@ int window_building_handle_mouse_depot_select_source(const mouse *m, building_in
 static void set_order_source(int depot_building_id, int building_id)
 {
     building *b = building_get(depot_building_id);
-    b->data.depot.order1.src_storage_id = building_id;
+    b->data.depot.current_order.src_storage_id = building_id;
     window_building_info_depot_return_to_main_window();
 }
 
 static void set_order_destination(int depot_building_id, int building_id)
 {
     building *b = building_get(depot_building_id);
-    b->data.depot.order1.dst_storage_id = building_id;
+    b->data.depot.current_order.dst_storage_id = building_id;
     window_building_info_depot_return_to_main_window();
 }
 
@@ -365,6 +365,6 @@ int window_building_handle_mouse_depot_select_resource(const mouse *m, building_
 static void set_order_resource(int depot_building_id, int resource_id)
 {
     building *b = building_get(depot_building_id);
-    b->data.depot.order1.resource_type = resource_id;
+    b->data.depot.current_order.resource_type = resource_id;
     window_building_info_depot_return_to_main_window();
 }
