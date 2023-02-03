@@ -34,8 +34,6 @@
 #include "window/option_popup.h"
 
 #include <math.h>
-#include <string.h>
-#include <stdlib.h>
 
 static void go_to_orders(int param1, int param2);
 static void toggle_resource_state(int index, int param2);
@@ -51,14 +49,6 @@ static void draw_dock_permission_buttons(int x_offset, int y_offset, int dock_id
 static void on_dock_cities_scroll(void);
 static int dock_cities_scroll_position(void);
 static void dock_cities_set_scroll_position(int);
-static void order_set_source(int index, int param2);
-static void order_set_destination(int index, int param2);
-static void order_set_resource(int index, int param2);
-static void order_set_condition_type(int index, int param2);
-static void order_set_condition_threshold(int index, int param2);
-static void set_order_source(int depot_building_id, int building_id);
-static void set_order_destination(int depot_building_id, int building_id);
-static void set_order_resource(int depot_building_id, int resource_id);
 
 static void button_caravanserai_policy(int selected_policy, int param2);
 
