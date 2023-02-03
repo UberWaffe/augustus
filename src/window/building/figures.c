@@ -374,8 +374,8 @@ static void draw_cartpusher(building_info_context *c, figure *f)
 
 static int is_depot_cartpusher_recalled(figure *f)
 {
-    return f->action_state == FIGURE_ACTION_235_DEPOT_CART_PUSHER_RETURNING ||
-        f->action_state == FIGURE_ACTION_236_DEPOT_CART_PUSHER_CANCEL_ORDER;
+    return f->action_state == FIGURE_ACTION_243_DEPOT_CART_PUSHER_RETURNING ||
+        f->action_state == FIGURE_ACTION_244_DEPOT_CART_PUSHER_CANCEL_ORDER;
 }
 
 static void draw_depot_cartpusher(building_info_context* c, figure* f)

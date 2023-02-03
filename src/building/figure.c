@@ -1726,7 +1726,7 @@ static void spawn_figure_depot(building* b)
         if (b->figure_spawn_delay > spawn_delay) {
             b->figure_spawn_delay = 0;
             figure* f = figure_create(FIGURE_DEPOT_CART_PUSHER, road.x, road.y, DIR_0_TOP);
-            f->action_state = FIGURE_ACTION_230_DEPOT_CART_PUSHER_INITIAL;
+            f->action_state = FIGURE_ACTION_231_DEPOT_CART_PUSHER_INITIAL;
             f->building_id = b->id;
             b->figure_id = f->id;
         }
