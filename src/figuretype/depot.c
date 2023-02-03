@@ -312,3 +312,8 @@ static int storage_add_resource(building *b, int resource, int amount)
     }
     return amount;
 }
+
+void figure_depot_recall(figure *f)
+{
+    f->action_state = FIGURE_ACTION_236_DEPOT_CART_PUSHER_CANCEL_ORDER;
+}

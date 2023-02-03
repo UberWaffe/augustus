@@ -851,6 +851,9 @@ static translation_string all_strings[] = {
     {TR_CHEAT_UPDATED_MONUMENTS, "Monuments updated"},
     {TR_CHEAT_UNLOCKED_ALL_BUILDINGS, "All buildings unlocked"},
     {TR_CHEAT_INCITED_RIOT, "Incited a riot"}
+    { TR_FIGURE_INFO_DEPOT_RETURNING, "Returning" }
+    { TR_FIGURE_INFO_DEPOT_RECALL, "Recall" },
+    { TR_FIGURE_INFO_DEPOT_DELIVER, "Deliver" },
 };
 
 void translation_english(const translation_string **strings, int *num_strings)

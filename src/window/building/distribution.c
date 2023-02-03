@@ -1528,7 +1528,7 @@ void window_building_draw_depot(building_info_context* c)
 
 }
 
-translation_key get_building_translation(building *b)
+static translation_key get_building_translation(building *b)
 {
     switch (b->type)
     {
@@ -1568,7 +1568,7 @@ void window_building_draw_depot_foreground(building_info_context* c)
         depot_order_buttons[1].width, depot_order_buttons[1].height, data.focus_button_id == 2);
     text_draw_label_and_number_centered(translation_for(get_building_translation(src)),
         src->id, "", c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[1].x,
-        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[1].y + 4,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[1].y + 6,
         depot_order_buttons[1].width, FONT_SMALL_PLAIN, 0);
 
     button_border_draw(c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[2].x,
@@ -1576,7 +1576,7 @@ void window_building_draw_depot_foreground(building_info_context* c)
         depot_order_buttons[2].width, depot_order_buttons[2].height, data.focus_button_id == 3);
     text_draw_label_and_number_centered(translation_for(get_building_translation(dst)),
         dst->id, "", c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[2].x,
-        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[2].y + 4,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[2].y + 6,
         depot_order_buttons[2].width, FONT_SMALL_PLAIN, 0);
 
     button_border_draw(c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[3].x,
@@ -1584,7 +1584,7 @@ void window_building_draw_depot_foreground(building_info_context* c)
         depot_order_buttons[3].width, depot_order_buttons[3].height, data.focus_button_id == 4);
     text_draw_label_and_number_centered(translation_for(TRANSLATION_KEY_ORDER_CONDITION[b->data.depot.order1.condition.condition_type]),
         b->data.depot.order1.condition.threshold, "", c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[3].x,
-        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[3].y + 4,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[3].y + 6,
         depot_order_buttons[3].width, FONT_SMALL_PLAIN, 0);
 }
 
