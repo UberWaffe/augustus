@@ -34,6 +34,8 @@
 #include "window/option_popup.h"
 
 #include <math.h>
+#include <string.h>
+#include <stdlib.h>
 
 static void go_to_orders(int param1, int param2);
 static void toggle_resource_state(int index, int param2);
@@ -49,6 +51,12 @@ static void draw_dock_permission_buttons(int x_offset, int y_offset, int dock_id
 static void on_dock_cities_scroll(void);
 static int dock_cities_scroll_position(void);
 static void dock_cities_set_scroll_position(int);
+static void order_set_source(int index, int param2);
+static void order_set_destination(int index, int param2);
+static void order_set_resource(int index, int param2);
+static void order_set_condition(int index, int param2);
+static void set_order_source(int depot_building_id, int building_id);
+static void set_order_destination(int depot_building_id, int building_id);
 
 static void button_caravanserai_policy(int selected_policy, int param2);
 
@@ -135,6 +143,15 @@ static image_button image_buttons_maintain[] = {
     {324, 0, 30, 19, IB_NORMAL, 0, 0, storage_toggle_permissions, button_none, 5, 0, 1, "UI", "Stop_Maintain_1"},
 };
 
+static int depot_order_buttons_offset_x = 16;
+static int depot_order_buttons_offset_y = 220;
+static generic_button depot_order_buttons[] = {
+    {0, 0, 26, 26, order_set_resource, button_none, 1, 0},
+    {40, 0, 100, 22, order_set_source, button_none, 2, 0},
+    {150, 0, 100, 22, order_set_destination, button_none, 3, 0},
+    {260, 0, 140, 22, order_set_condition, button_none, 4, 0},
+};
+
 static struct {
     int title;
     int subtitle;
@@ -165,6 +182,7 @@ static struct {
     int permission_focus_button_id;
     int building_id;
     int partial_resource_focus_button_id;
+    int storage_building_focus_button_id;
     int tooltip_id;
     int dock_scrollbar_position;
     int dock_max_cities_visible;
@@ -1495,4 +1513,210 @@ void window_building_draw_caravanserai(building_info_context *c)
 
     text_draw_centered(translation_for(TR_BUILDING_CARAVANSERAI), c->x_offset, c->y_offset + 12,
         BLOCK_SIZE * c->width_blocks, FONT_LARGE_BLACK, 0);
+}
+
+void window_building_draw_depot(building_info_context* c)
+{
+    window_building_play_sound(c, "wavs/eng_post.wav");
+    outer_panel_draw(c->x_offset, c->y_offset, c->width_blocks, c->height_blocks);
+    inner_panel_draw(c->x_offset + 16, c->y_offset + 136, c->width_blocks - 2, 4);
+    text_draw_centered(translation_for(TR_BUILDING_DEPOT),
+        c->x_offset, c->y_offset + 12, 16 * c->width_blocks, FONT_LARGE_BLACK, 0);
+    text_draw_multiline(translation_for(TR_BUILDING_DEPOT_DESC),
+        c->x_offset + 32, c->y_offset + 76, 16 * (c->width_blocks - 4), FONT_NORMAL_BLACK, 0);
+    window_building_draw_employment(c, 138);
+
+}
+
+translation_key get_building_translation(building *b)
+{
+    switch (b->type)
+    {
+    case BUILDING_GRANARY:
+        return TR_BUILDING_GRANARY;
+    case BUILDING_WAREHOUSE:
+        return TR_BUILDING_WAREHOUSE;
+    default:
+        return TR_BUILDING_NONE;
+    }
+}
+
+static const translation_key TRANSLATION_KEY_ORDER_CONDITION[1] = {
+    TR_ORDER_CONDITION_ALWAYS
+};
+
+void window_building_draw_depot_foreground(building_info_context* c)
+{
+    building *b = building_get(c->building_id);
+
+    building *src = building_get(b->data.depot.order1.src_storage_id);
+    building *dst = building_get(b->data.depot.order1.dst_storage_id);
+
+    if (!b->data.depot.order1.resource_type) {
+        b->data.depot.order1.resource_type = RESOURCE_WHEAT;
+    }
+    int image_id = image_group(GROUP_RESOURCE_ICONS) + b->data.depot.order1.resource_type +
+        resource_image_offset(b->data.depot.order1.resource_type, RESOURCE_IMAGE_ICON);
+    button_border_draw(c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[0].x,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[0].y,
+        depot_order_buttons[0].width, depot_order_buttons[0].height, data.focus_button_id == 1);
+    image_draw(image_id, c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[0].x + 2,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[0].y + 2);
+
+    button_border_draw(c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[1].x,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[1].y,
+        depot_order_buttons[1].width, depot_order_buttons[1].height, data.focus_button_id == 2);
+    text_draw_label_and_number_centered(translation_for(get_building_translation(src)),
+        src->id, "", c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[1].x,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[1].y + 4,
+        depot_order_buttons[1].width, FONT_SMALL_PLAIN, 0);
+
+    button_border_draw(c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[2].x,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[2].y,
+        depot_order_buttons[2].width, depot_order_buttons[2].height, data.focus_button_id == 3);
+    text_draw_label_and_number_centered(translation_for(get_building_translation(dst)),
+        dst->id, "", c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[2].x,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[2].y + 4,
+        depot_order_buttons[2].width, FONT_SMALL_PLAIN, 0);
+
+    button_border_draw(c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[3].x,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[3].y,
+        depot_order_buttons[3].width, depot_order_buttons[3].height, data.focus_button_id == 4);
+    text_draw_label_and_number_centered(translation_for(TRANSLATION_KEY_ORDER_CONDITION[b->data.depot.order1.condition.condition_type]),
+        b->data.depot.order1.condition.threshold, "", c->x_offset + depot_order_buttons_offset_x + depot_order_buttons[3].x,
+        c->y_offset + depot_order_buttons_offset_y + depot_order_buttons[3].y + 4,
+        depot_order_buttons[3].width, FONT_SMALL_PLAIN, 0);
+}
+
+int window_building_handle_mouse_depot(const mouse* m, building_info_context* c)
+{
+    generic_buttons_handle_mouse(m, c->x_offset + depot_order_buttons_offset_x, c->y_offset + depot_order_buttons_offset_y,
+        depot_order_buttons, 4, &data.focus_button_id);
+}
+
+static void order_set_source(int index, int param2)
+{
+    window_building_info_depot_select_source();
+}
+
+static void order_set_destination(int index, int param2)
+{
+    window_building_info_depot_select_destination();
+}
+
+static void order_set_condition(int index, int param2)
+{
+    return;
+}
+
+void draw_order_source_destination_background(building_info_context* c, uint8_t *title)
+{
+    int y_offset = window_building_get_vertical_offset(c, 28);
+    c->help_id = 0;
+    outer_panel_draw(c->x_offset, y_offset, 29, 28);
+    text_draw_centered(title, c->x_offset, y_offset + 10, 16 * c->width_blocks, FONT_LARGE_BLACK, 0);
+    inner_panel_draw(c->x_offset + 16, y_offset + 42, c->width_blocks - 2, 21);
+}
+
+void window_building_draw_depot_select_source(building_info_context* c)
+{
+    draw_order_source_destination_background(c, translation_for(TR_DEPOST_SELECT_SOURCE));
+}
+
+void draw_depot_select_source_destination(building_info_context* c) {
+    int y_offset = window_building_get_vertical_offset(c, 28);
+    int count = 0;
+    for (int i = 1; i < building_count(); i++) {
+        building* b = building_get(i);
+        if (b->type == BUILDING_GRANARY || b->type == BUILDING_WAREHOUSE) {
+            button_border_draw(c->x_offset + 18, y_offset + 46 + 22 * count, 16 * (c->width_blocks - 2) - 4,
+                22, data.storage_building_focus_button_id == count + 1);
+            text_draw_label_and_number_centered(translation_for(get_building_translation(b)),
+                b->id, "", c->x_offset + 32, y_offset + 50 + 22 * count, 16 * (c->width_blocks - 2) - 4, FONT_SMALL_PLAIN, 0);
+            count++;
+        }
+    }
+}
+
+void window_building_draw_depot_select_source_foreground(building_info_context* c)
+{
+    draw_depot_select_source_destination(c);
+}
+
+int handle_mouse_depot_select_source_destination(const mouse* m, building_info_context* c, int is_source)
+{
+    int y_offset = window_building_get_vertical_offset(c, 28);
+    int total = 0, count = 0;
+    for (int i = 1; i < building_count(); i++) {
+        building* b = building_get(i);
+        if (b->type == BUILDING_GRANARY || b->type == BUILDING_WAREHOUSE) {
+            total++;
+        }
+    }
+
+    generic_button* buttons = (generic_button*)malloc(sizeof(generic_button) * total);
+    for (int i = 1; i < building_count(); i++) {
+        building* b = building_get(i);
+        if (b->type == BUILDING_GRANARY || b->type == BUILDING_WAREHOUSE) {
+            buttons[count].x = 0;
+            buttons[count].y = 22 * count;
+            buttons[count].width = 16 * (c->width_blocks - 2) - 4;
+            buttons[count].height = 22;
+            buttons[count].left_click_handler = is_source ? set_order_source : set_order_destination;
+            buttons[count].right_click_handler = button_none;
+            buttons[count].parameter1 = c->building_id;
+            buttons[count].parameter2 = i;
+            count++;
+        }
+    }
+
+    for (int i = 1; i < building_count(); i++) {
+        building* b = building_get(i);
+        if (b->type == BUILDING_GRANARY || b->type == BUILDING_WAREHOUSE) {
+            generic_buttons_handle_mouse(m, c->x_offset + 18, y_offset + 46,
+                buttons, total, &data.storage_building_focus_button_id);
+            count++;
+        }
+    }
+
+    free(buttons);
+}
+
+int window_building_handle_mouse_depot_select_source(const mouse *m, building_info_context *c)
+{
+    handle_mouse_depot_select_source_destination(m, c, 1);
+}
+
+void window_building_draw_depot_select_destination(building_info_context* c)
+{
+    draw_order_source_destination_background(c, translation_for(TR_DEPOST_SELECT_DESTINATION));
+}
+
+void window_building_draw_depot_select_destination_foreground(building_info_context* c)
+{
+    draw_depot_select_source_destination(c);
+}
+
+static void set_order_source(int depot_building_id, int building_id)
+{
+    building* b = building_get(depot_building_id);
+    b->data.depot.order1.src_storage_id = building_id;
+    window_building_info_depot_close_select_source_destination();
+}
+
+static void set_order_destination(int depot_building_id, int building_id)
+{
+    building* b = building_get(depot_building_id);
+    b->data.depot.order1.dst_storage_id = building_id;
+    window_building_info_depot_close_select_source_destination();
+}
+
+int window_building_handle_mouse_depot_select_destination(const mouse* m, building_info_context* c)
+{
+    handle_mouse_depot_select_source_destination(m, c, 0);
+}
+
+static void order_set_resource(int index, int param2)
+{
+    window_building_info_depot_select_resource();
 }

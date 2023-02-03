@@ -1,2 +1,2 @@
-#include "depot.c"
+#include "depot.h"
 

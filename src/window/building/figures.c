@@ -88,8 +88,10 @@ static int big_people_image(figure_type type)
         case FIGURE_BARKEEP:
         case FIGURE_BARKEEP_SUPPLIER:
             return assets_get_image_id("Entertainment", "Barkeep Portrait");
-        default:
-            break;
+    case FIGURE_DEPOT_CART_PUSHER:
+        return assets_get_image_id(assets_get_group_id("Areldir", "Slave_Walker"), "Slave Portrait");
+    default:
+        break;
     }
     return image_group(GROUP_BIG_PEOPLE) + FIGURE_TYPE_TO_BIG_FIGURE_IMAGE[type] - 1;
 }
@@ -362,6 +364,11 @@ static void draw_cartpusher(building_info_context *c, figure *f)
     }
 }
 
+static void draw_depot_cartpusher(building_info_context* c, figure* f)
+{
+
+}
+
 static void draw_supplier(building_info_context *c, figure *f)
 {
     image_draw(big_people_image(f->type), c->x_offset + 28, c->y_offset + 112, COLOR_MASK_NONE, SCALE_NONE);
@@ -486,6 +493,8 @@ static void draw_figure_info(building_info_context *c, int figure_id)
         draw_supplier(c, f);
     } else if (type == FIGURE_WORK_CAMP_WORKER || type == FIGURE_WORK_CAMP_SLAVE) {
         draw_monument_worker(c, f);
+    } else if (type == FIGURE_DEPOT_CART_PUSHER) {
+        draw_depot_cartpusher(c, f);
     } else {
         draw_normal_figure(c, f);
     }

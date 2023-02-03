@@ -54,4 +54,15 @@ void window_building_get_tooltip_warehouse_orders(int *group_id, int *text_id, i
 void window_building_handle_mouse_caravanserai(const mouse *m, building_info_context *c);
 void window_building_draw_caravanserai_foreground(building_info_context *c);
 void window_building_draw_caravanserai(building_info_context *c);
+void window_building_draw_depot(building_info_context* c);
+void window_building_draw_depot_foreground(building_info_context* c);
+int window_building_handle_mouse_depot(const mouse* m, building_info_context* c);
+void window_building_draw_depot_select_source(building_info_context* c);
+void window_building_draw_depot_select_source_foreground(building_info_context* c);
+void window_building_draw_depot_select_destination(building_info_context* c);
+void window_building_draw_depot_select_destination_foreground(building_info_context* c);
+
+int window_building_handle_mouse_depot_select_source(const mouse* m, building_info_context* c);
+int window_building_handle_mouse_depot_select_destination(const mouse* m, building_info_context* c);
+
 #endif // WINDOW_BUILDING_DISTRIBUTION_H
