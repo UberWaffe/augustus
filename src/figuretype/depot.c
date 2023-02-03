@@ -189,13 +189,15 @@ static void set_cart_graphic(figure *f)
     } else if (f->loads_sold_or_carrying < 8) {
         if (resource_is_food(f->resource_id)) {
             f->cart_image_id = image_group(GROUP_FIGURE_CARTPUSHER_CART_MULTIPLE_FOOD) + CART_OFFSET_MULTIPLE_LOADS_FOOD[f->resource_id];
+            f->cart_image_id += resource_image_offset(f->resource_id, RESOURCE_IMAGE_FOOD_CART);
         } else {
             f->cart_image_id = image_group(GROUP_FIGURE_CARTPUSHER_CART_MULTIPLE_RESOURCE) + CART_OFFSET_MULTIPLE_LOADS_NON_FOOD[f->resource_id];
+            f->cart_image_id += resource_image_offset(f->resource_id, RESOURCE_IMAGE_CART);
         }
-        f->cart_image_id += resource_image_offset(f->resource_id, RESOURCE_IMAGE_CART);
     } else {
         f->cart_image_id = image_group(GROUP_FIGURE_CARTPUSHER_CART_MULTIPLE_FOOD) +
             CART_OFFSET_8_LOADS_FOOD[f->resource_id];
+        f->cart_image_id += resource_image_offset(f->resource_id, RESOURCE_IMAGE_FOOD_CART);
     }
 }
 
