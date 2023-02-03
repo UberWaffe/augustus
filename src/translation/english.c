@@ -221,6 +221,8 @@ static translation_string all_strings[] = {
     {TR_BUILDING_GRAND_TEMPLE_MENU, "Grand temple" },
     {TR_BUILDING_WORK_CAMP, "Work camp" },
     {TR_BUILDING_WORK_CAMP_DESC, "Laborers gather here to transport materials to construction sites." },
+    {TR_BUILDING_DEPOT, "Cart depot"},
+    {TR_BUILDING_DEPOT_DESC, "Placeholder"},
     {TR_HEADER_HOUSING, "Housing"},
     {TR_ADVISOR_HOUSING_ROOM, "City housing has room available for"},
     {TR_ADVISOR_HOUSING_NO_ROOM, "There is no room available in city housing."},

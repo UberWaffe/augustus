@@ -303,6 +303,9 @@ static void add_to_map(int type, building *b, int size,
             map_tiles_update_area_roads(b->x, b->y, 4);
             building_monument_set_phase(b, MONUMENT_START);
             break;
+        case BUILDING_DEPOT:
+            add_building(b, assets_get_image_id(assets_get_group_id("Areldir", "Aesthetics"), "ornamental fir"));
+            break;
     }
     map_routing_update_land();
     map_routing_update_walls();
