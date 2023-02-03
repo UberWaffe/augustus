@@ -13,7 +13,9 @@
 #include "figure/movement.h"
 #include "figure/route.h"
 #include "game/resource.h"
+#include "map/road_access.h"
 #include "map/road_network.h"
+#include "map/routing.h"
 #include "map/routing_terrain.h"
 #include "figure/image.h"
 
@@ -36,7 +38,6 @@ void figure_depot_cartpusher_action(figure *f)
     f->cart_image_id = 0;
     int speed_factor = cartpusher_speed();
     int percentage_speed = 0;
-    int road_network_id = map_road_network_get(f->grid_offset);
     f->terrain_usage = TERRAIN_USAGE_ROADS;
     building *b = building_get(f->building_id);
 

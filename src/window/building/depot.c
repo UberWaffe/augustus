@@ -149,7 +149,7 @@ void window_building_draw_depot_foreground(building_info_context *c)
 
 int window_building_handle_mouse_depot(const mouse *m, building_info_context *c)
 {
-    generic_buttons_handle_mouse(m, c->x_offset + DEPOT_BUTTONS_X_OFFSET, c->y_offset + DEPOT_BUTTONS_Y_OFFSET,
+    return generic_buttons_handle_mouse(m, c->x_offset + DEPOT_BUTTONS_X_OFFSET, c->y_offset + DEPOT_BUTTONS_Y_OFFSET,
         depot_order_buttons, 5, &data.focus_button_id);
 }
 
@@ -278,13 +278,13 @@ int handle_mouse_depot_select_source_destination(const mouse *m, building_info_c
         }
     }
 
-    generic_buttons_handle_mouse(m, c->x_offset + 18, y_offset + 46, depot_select_storage_buttons,
+    return generic_buttons_handle_mouse(m, c->x_offset + 18, y_offset + 46, depot_select_storage_buttons,
         MAX_VISIBLE_ROWS, &data.storage_building_focus_button_id);
 }
 
 int window_building_handle_mouse_depot_select_source(const mouse *m, building_info_context *c)
 {
-    handle_mouse_depot_select_source_destination(m, c, 1);
+    return handle_mouse_depot_select_source_destination(m, c, 1);
 }
 
 static void set_order_source(int depot_building_id, int building_id)
@@ -313,7 +313,7 @@ void window_building_draw_depot_select_destination_foreground(building_info_cont
 
 int window_building_handle_mouse_depot_select_destination(const mouse *m, building_info_context *c)
 {
-    handle_mouse_depot_select_source_destination(m, c, 0);
+    return handle_mouse_depot_select_source_destination(m, c, 0);
 }
 
 static void order_set_resource(int index, int param2)
@@ -371,7 +371,7 @@ int window_building_handle_mouse_depot_select_resource(const mouse *m, building_
     for (int i = 0; i < sizeof(depot_select_resource_buttons) / sizeof(generic_button); i++) {
         depot_select_resource_buttons[i].parameter1 = c->building_id;
     }
-    generic_buttons_handle_mouse(m, c->x_offset, c->y_offset, depot_select_resource_buttons,
+    return generic_buttons_handle_mouse(m, c->x_offset, c->y_offset, depot_select_resource_buttons,
         15, &data.depot_resource_focus_button_id);
 }
 

@@ -911,7 +911,8 @@ static void draw_foreground(void)
     if (!context.storage_show_special_orders &&
         !context.depot_select_source &&
         !context.depot_select_destination &&
-        !context.depot_select_resource) {
+        !context.depot_select_resource &&
+        !building_monument_is_unfinished_monument(b)) {
         int workers_needed = model_get_building(building_get(context.building_id)->type)->laborers;
         if (workers_needed) {
             draw_mothball_button(context.x_offset + 400, context.y_offset + 3 + 16 * context.height_blocks - 40,

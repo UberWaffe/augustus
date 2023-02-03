@@ -28,6 +28,7 @@
 #include "scenario/property.h"
 #include "translation/translation.h"
 #include "widget/city.h"
+#include "window/city.h"
 
 #define CAMEL_PORTRAIT 59
 
