@@ -6,6 +6,7 @@
 #include "building/type.h"
 #include "core/buffer.h"
 #include "core/time.h"
+#include "translation/translation.h"
 
 typedef struct building {
     int id;
@@ -264,5 +265,7 @@ void building_save_state(buffer *buf, buffer *highest_id, buffer *highest_id_eve
                          buffer *sequence, buffer *corrupt_houses);
 
 void building_load_state(buffer *buf, buffer *sequence, buffer *corrupt_houses, int includes_building_size, int save_version);
+
+translation_key building_translation_key(building *b);
 
 #endif // BUILDING_BUILDING_H

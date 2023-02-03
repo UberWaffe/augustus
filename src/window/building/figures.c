@@ -372,20 +372,6 @@ static void draw_cartpusher(building_info_context *c, figure *f)
     }
 }
 
-// TODO move this around to have only one version of this
-static translation_key get_building_translation(building* b)
-{
-    switch (b->type)
-    {
-    case BUILDING_GRANARY:
-        return TR_BUILDING_GRANARY;
-    case BUILDING_WAREHOUSE:
-        return TR_BUILDING_WAREHOUSE;
-    default:
-        return TR_BUILDING_NONE;
-    }
-}
-
 static int is_depot_cartpusher_recalled(figure *f)
 {
     return f->action_state == FIGURE_ACTION_235_DEPOT_CART_PUSHER_RETURNING ||
@@ -419,10 +405,10 @@ static void draw_depot_cartpusher(building_info_context* c, figure* f)
     image_draw(image_group(GROUP_RESOURCE_ICONS) +
         resource_type + resource_image_offset(resource_type, RESOURCE_IMAGE_ICON),
         c->x_offset + 40 + width, c->y_offset + 210);
-    width += text_draw_label_and_number(translation_for(get_building_translation(src)),
+    width += text_draw_label_and_number(translation_for(building_translation_key(src)),
         f->current_order.src_storage_id, " -----) ",
         c->x_offset + 66 + width, c->y_offset + 216, FONT_SMALL_BLACK, 0);
-    text_draw_label_and_number(translation_for(get_building_translation(dst)),
+    text_draw_label_and_number(translation_for(building_translation_key(dst)),
         f->current_order.dst_storage_id, "",
         c->x_offset + 66 + width, c->y_offset + 216, FONT_SMALL_BLACK, 0);
 }

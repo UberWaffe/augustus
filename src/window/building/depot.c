@@ -48,19 +48,6 @@ static generic_button depot_order_buttons[] = {
     {384, 30, 32, 22, order_set_condition_threshold, button_none, 5, 0},
 };
 
-static translation_key get_building_translation(building *b)
-{
-    switch (b->type)
-    {
-    case BUILDING_GRANARY:
-        return TR_BUILDING_GRANARY;
-    case BUILDING_WAREHOUSE:
-        return TR_BUILDING_WAREHOUSE;
-    default:
-        return TR_BUILDING_NONE;
-    }
-}
-
 static int storage_buildings_count() {
     int count = 0;
     for (int i = 1; i < building_count(); i++) {
@@ -135,14 +122,14 @@ void window_building_draw_depot_foreground(building_info_context *c)
     text_draw(translation_for(TR_BUILDING_INFO_DEPOT_SOURCE), x_offset, y_offset + depot_order_buttons[1].y + 6, FONT_SMALL_PLAIN, 0);
     button_border_draw(x_offset + depot_order_buttons[1].x, y_offset + depot_order_buttons[1].y,
         depot_order_buttons[1].width, depot_order_buttons[1].height, data.focus_button_id == 2);
-    text_draw_label_and_number_centered(translation_for(get_building_translation(src)),
+    text_draw_label_and_number_centered(translation_for(building_translation_key(src)),
         src->id, "", x_offset + depot_order_buttons[1].x, y_offset + depot_order_buttons[1].y + 6,
         depot_order_buttons[1].width, FONT_SMALL_PLAIN, 0);
 
     text_draw(translation_for(TR_BUILDING_INFO_DEPOT_DESTINATION), x_offset, y_offset + depot_order_buttons[2].y + 6, FONT_SMALL_PLAIN, 0);
     button_border_draw(x_offset + depot_order_buttons[2].x, y_offset + depot_order_buttons[2].y,
         depot_order_buttons[2].width, depot_order_buttons[2].height, data.focus_button_id == 3);
-    text_draw_label_and_number_centered(translation_for(get_building_translation(dst)),
+    text_draw_label_and_number_centered(translation_for(building_translation_key(dst)),
         dst->id, "", x_offset + depot_order_buttons[2].x, y_offset + depot_order_buttons[2].y + 6,
         depot_order_buttons[2].width, FONT_SMALL_PLAIN, 0);
 }
@@ -227,7 +214,7 @@ void draw_depot_select_source_destination(building_info_context *c) {
                 button_border_draw(c->x_offset + 18, y_offset + 46 + ROW_HEIGHT * index,
                     16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
                     22, data.storage_building_focus_button_id == index + 1);
-                text_draw_label_and_number_centered(translation_for(get_building_translation(b)),
+                text_draw_label_and_number_centered(translation_for(building_translation_key(b)),
                     b->id, "", c->x_offset + 32, y_offset + 52 + ROW_HEIGHT * index,
                     16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
                     FONT_SMALL_PLAIN, 0);
