@@ -23,6 +23,11 @@ typedef struct {
     int position_on_touch;
 } scrollbar_type;
 
+#define SCROLL_BUTTON_HEIGHT 26
+#define SCROLL_BUTTON_WIDTH 39
+#define SCROLL_DOT_SIZE 25
+#define TOTAL_BUTTON_HEIGHT (2 * SCROLL_BUTTON_HEIGHT + SCROLL_DOT_SIZE)
+
 /**
  * Initializes the scrollbar
  * @param scrollbar Scrollbar

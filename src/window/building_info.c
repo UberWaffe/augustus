@@ -403,6 +403,9 @@ static void init(int grid_offset)
                     context.has_road_access = 1;
                 }
                 break;
+            case BUILDING_DEPOT:
+                window_building_depot_init();
+                break;
             default:
                 if (map_has_road_access(b->x, b->y, b->size, 0)) {
                     context.has_road_access = 1;
@@ -990,7 +993,7 @@ static void handle_input(const mouse *m, const hotkeys *h)
 {
     int handled = 0;
     // general buttons
-    if (context.storage_show_special_orders) {
+    if (context.storage_show_special_orders || context.depot_select_destination || context.depot_select_source) {
         int y_offset = window_building_get_vertical_offset(&context, 28);
         handled |= image_buttons_handle_mouse(m, context.x_offset, y_offset + 400,
             image_buttons_help_close, 2, &focus_image_button_id);

@@ -200,11 +200,11 @@ static void update_image(figure* f)
         f->direction < 8 ? f->direction : f->previous_tile_direction);
 
     if (f->action_state == FIGURE_ACTION_149_CORPSE) {
-        f->image_id = image_group(GROUP_FIGURE_CARTPUSHER) + figure_image_corpse_offset(f) + 96;
+        f->image_id = image_group(GROUP_FIGURE_MIGRANT) + figure_image_corpse_offset(f) + 96;
         f->cart_image_id = 0;
     }
     else {
-        f->image_id = image_group(GROUP_FIGURE_CARTPUSHER) + dir + 8 * f->image_offset;
+        f->image_id = image_group(GROUP_FIGURE_MIGRANT) + dir + 8 * f->image_offset;
     }
     if (f->cart_image_id) {
         f->cart_image_id += dir;

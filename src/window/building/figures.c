@@ -96,7 +96,7 @@ static int big_people_image(figure_type type)
         case FIGURE_BARKEEP_SUPPLIER:
             return assets_get_image_id("Entertainment", "Barkeep Portrait");
     case FIGURE_DEPOT_CART_PUSHER:
-        return image_group(GROUP_BIG_PEOPLE) + FIGURE_TYPE_TO_BIG_FIGURE_IMAGE[FIGURE_CART_PUSHER] - 1;
+        return image_group(GROUP_BIG_PEOPLE) + FIGURE_TYPE_TO_BIG_FIGURE_IMAGE[FIGURE_IMMIGRANT] - 1;
     default:
         break;
     }
