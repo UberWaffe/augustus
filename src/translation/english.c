@@ -224,9 +224,6 @@ static translation_string all_strings[] = {
     {TR_BUILDING_DEPOT, "Cart depot"},
     {TR_BUILDING_DEPOT_DESC, "Placeholder"},
     {TR_BUILDING_NONE, "None"},
-    {TR_ORDER_CONDITION_ALWAYS, "Always"},
-    {TR_DEPOST_SELECT_SOURCE, "Select source storage" },
-    {TR_DEPOST_SELECT_DESTINATION, "Select destination storage" },
     {TR_HEADER_HOUSING, "Housing"},
     {TR_ADVISOR_HOUSING_ROOM, "City housing has room available for"},
     {TR_ADVISOR_HOUSING_NO_ROOM, "There is no room available in city housing."},
@@ -851,8 +848,19 @@ static translation_string all_strings[] = {
     {TR_CHEAT_UPDATED_MONUMENTS, "Monuments updated"},
     {TR_CHEAT_UNLOCKED_ALL_BUILDINGS, "All buildings unlocked"},
     {TR_CHEAT_INCITED_RIOT, "Incited a riot"}
-    { TR_FIGURE_INFO_DEPOT_RETURNING, "Returning" }
+    { TR_ORDER_CONDITION_ALWAYS, "Always" },
+    { TR_ORDER_CONDITION_NEVER, "Never" },
+    { TR_ORDER_CONDITION_SOURCE_HAS_MORE_THAN, "Source has more than" },
+    { TR_ORDER_CONDITION_DESTINATION_HAS_LESS_THAN, "Destiantion has less than" },
+    { TR_BUILDING_INFO_DEPOT_DELIVER, "Deliver" },
+    { TR_BUILDING_INFO_DEPOT_CONDITION, "When" },
+    { TR_BUILDING_INFO_DEPOT_SOURCE, "Source" },
+    { TR_BUILDING_INFO_DEPOT_DESTINATION, "Destination" },
+    { TR_BUILDING_INFO_DEPOT_SELECT_SOURCE_TITLE, "Select source storage" },
+    { TR_BUILDING_INFO_DEPOT_SELECT_DESTINATION_TITLE, "Select destination storage" },
+    { TR_BUILDING_INFO_DEPOT_SELECT_RESOURCE_TITLE, "Select resource" },
     { TR_FIGURE_INFO_DEPOT_RECALL, "Recall" },
+    { TR_FIGURE_INFO_DEPOT_RETURNING, "Returning" }
     { TR_FIGURE_INFO_DEPOT_DELIVER, "Deliver" },
 };
 

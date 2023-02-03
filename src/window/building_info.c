@@ -275,6 +275,7 @@ static void init(int grid_offset)
     context.storage_show_special_orders = 0;
     context.depot_select_destination = 0;
     context.depot_select_source = 0;
+    context.depot_select_resource = 0;
     context.can_go_to_advisor = 0;
     context.building_id = map_building_at(grid_offset);
     context.rubble_building_type = map_rubble_building_type(grid_offset);
@@ -580,6 +581,8 @@ static void draw_background(void)
                 window_building_draw_depot_select_source(&context);
             } else if (context.depot_select_destination) {
                 window_building_draw_depot_select_destination(&context);
+            } else if (context.depot_select_resource) {
+                window_building_draw_depot_select_resource(&context);
             } else {
                 window_building_draw_depot(&context);
             }
@@ -804,6 +807,8 @@ static void draw_foreground(void)
                 window_building_draw_depot_select_source_foreground(&context);
             } else if (context.depot_select_destination) {
                 window_building_draw_depot_select_destination_foreground(&context);
+            } else if (context.depot_select_resource) {
+                window_building_draw_depot_select_resource_foreground(&context);
             } else {
                 window_building_draw_depot_foreground(&context);
             }
@@ -885,7 +890,10 @@ static void draw_foreground(void)
         window_building_draw_legion_info_foreground(&context);
     }
     // general buttons
-    if (context.storage_show_special_orders || context.depot_select_source || context.depot_select_destination) {
+    if (context.storage_show_special_orders ||
+        context.depot_select_source ||
+        context.depot_select_destination ||
+        context.depot_select_resource) {
         int y_offset = window_building_get_vertical_offset(&context, 28);
         image_buttons_draw(context.x_offset, y_offset + 400, image_buttons_help_close, 2);
     } else {
@@ -899,7 +907,10 @@ static void draw_foreground(void)
     if (!context.storage_show_special_orders && !building_monument_is_unfinished_monument(b) && has_mothball_button()) {
             draw_mothball_button(context.x_offset, context.y_offset + BLOCK_SIZE * context.height_blocks - 40);
     }
-    if (!context.storage_show_special_orders && !context.depot_select_source && !context.depot_select_destination) {
+    if (!context.storage_show_special_orders &&
+        !context.depot_select_source &&
+        !context.depot_select_destination &&
+        !context.depot_select_resource) {
         int workers_needed = model_get_building(building_get(context.building_id)->type)->laborers;
         if (workers_needed) {
             draw_mothball_button(context.x_offset + 400, context.y_offset + 3 + 16 * context.height_blocks - 40,
@@ -967,6 +978,8 @@ static int handle_specific_building_info_mouse(const mouse *m)
                 window_building_handle_mouse_depot_select_source(m, &context);
             } else if (context.depot_select_destination) {
                 window_building_handle_mouse_depot_select_destination(m, &context);
+            } else if (context.depot_select_resource) {
+                window_building_handle_mouse_depot_select_resource(m, &context);
             } else {
                 window_building_handle_mouse_depot(m, &context);
             }
@@ -993,7 +1006,10 @@ static void handle_input(const mouse *m, const hotkeys *h)
 {
     int handled = 0;
     // general buttons
-    if (context.storage_show_special_orders || context.depot_select_destination || context.depot_select_source) {
+    if (context.storage_show_special_orders ||
+        context.depot_select_destination ||
+        context.depot_select_source ||
+        context.depot_select_resource) {
         int y_offset = window_building_get_vertical_offset(&context, 28);
         handled |= image_buttons_handle_mouse(m, context.x_offset, y_offset + 400,
             image_buttons_help_close, 2, &focus_image_button_id);
@@ -1166,14 +1182,32 @@ void window_building_info_depot_select_destination(void)
 
 void window_building_info_depot_select_resource(void)
 {
-    building* b = building_get(context.building_id);
-    b->data.depot.order1.resource_type = (b->data.depot.order1.resource_type + 1) % 16;
+    //building *b = building_get(context.building_id);
+    //if (++b->data.depot.order1.resource_type == RESOURCE_MAX) {
+    //    b->data.depot.order1.resource_type = RESOURCE_MIN;
+    //}
+    context.depot_select_resource = 1;
     window_invalidate();
 }
 
-void window_building_info_depot_close_select_source_destination(void)
+void window_building_info_depot_toggle_condition_type(void)
+{
+    building *b = building_get(context.building_id);
+    b->data.depot.order1.condition.condition_type = (b->data.depot.order1.condition.condition_type + 1) % 4;
+    window_invalidate();
+}
+
+void window_building_info_depot_toggle_condition_threshold(void)
+{
+    building* b = building_get(context.building_id);
+    b->data.depot.order1.condition.threshold = (b->data.depot.order1.condition.threshold + 4) % 36;
+    window_invalidate();
+}
+
+void window_building_info_depot_return_to_main_window(void)
 {
     context.depot_select_source = 0;
     context.depot_select_destination = 0;
+    context.depot_select_resource = 0;
     window_invalidate();
 }

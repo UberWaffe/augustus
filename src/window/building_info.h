@@ -13,6 +13,8 @@ void window_building_info_depot_select_destination(void);
 
 void window_building_info_depot_select_resource(void);
 
-void window_building_info_depot_close_select_source_destination(void);
+void window_building_info_depot_toggle_condition_type(void);
+
+void window_building_info_depot_return_to_main_window(void);
 
 #endif // WINDOW_BUILDING_INFO_H

@@ -60,6 +60,7 @@ typedef struct {
         int drawn;
         int figure_ids[7];
     } figure;
+    int depot_select_resource;
     int depot_select_source;
     int depot_select_destination;
 } building_info_context;
