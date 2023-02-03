@@ -185,8 +185,6 @@ static struct {
     int image_button_focus_id;
 } data;
 
-
-
 uint8_t warehouse_full_button_text[] = "32";
 uint8_t warehouse_3quarters_button_text[] = "24";
 uint8_t warehouse_half_button_text[] = "16";

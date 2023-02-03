@@ -1183,10 +1183,6 @@ void window_building_info_depot_select_destination(void)
 
 void window_building_info_depot_select_resource(void)
 {
-    //building *b = building_get(context.building_id);
-    //if (++b->data.depot.order1.resource_type == RESOURCE_MAX) {
-    //    b->data.depot.order1.resource_type = RESOURCE_MIN;
-    //}
     context.depot_select_resource = 1;
     window_invalidate();
 }
