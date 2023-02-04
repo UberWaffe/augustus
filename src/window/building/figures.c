@@ -386,7 +386,7 @@ static void draw_depot_cartpusher(building_info_context* c, figure* f)
         image_draw(image_group(GROUP_RESOURCE_ICONS) +
             f->resource_id + resource_image_offset(f->resource_id, RESOURCE_IMAGE_ICON),
             c->x_offset + 92, c->y_offset + 135);
-        text_draw_number(f->loads_sold_or_carrying, 'x', "", c->x_offset + 118, c->y_offset + 139, FONT_SMALL_BLACK);
+        text_draw_number(f->loads_sold_or_carrying, 'x', "", c->x_offset + 118, c->y_offset + 139, FONT_NORMAL_BROWN);
     }
 
     int resource_type = f->current_order.resource_type;
@@ -401,16 +401,16 @@ static void draw_depot_cartpusher(building_info_context* c, figure* f)
         100, FONT_SMALL_PLAIN, 0);
 
     int width = text_draw(translation_for(TR_FIGURE_INFO_DEPOT_DELIVER), c->x_offset + 40, c->y_offset + 216,
-        FONT_SMALL_BLACK, 0);
+        FONT_NORMAL_BROWN, 0);
     image_draw(image_group(GROUP_RESOURCE_ICONS) +
         resource_type + resource_image_offset(resource_type, RESOURCE_IMAGE_ICON),
         c->x_offset + 40 + width, c->y_offset + 210);
     width += text_draw_label_and_number(translation_for(building_translation_key(src)),
         f->current_order.src_storage_id, " -----) ",
-        c->x_offset + 66 + width, c->y_offset + 216, FONT_SMALL_BLACK, 0);
+        c->x_offset + 66 + width, c->y_offset + 216, FONT_NORMAL_BROWN, 0);
     text_draw_label_and_number(translation_for(building_translation_key(dst)),
         f->current_order.dst_storage_id, "",
-        c->x_offset + 66 + width, c->y_offset + 216, FONT_SMALL_BLACK, 0);
+        c->x_offset + 66 + width, c->y_offset + 216, FONT_NORMAL_BROWN, 0);
 }
 
 static void draw_supplier(building_info_context *c, figure *f)
