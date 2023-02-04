@@ -221,6 +221,9 @@ static translation_string all_strings[] = {
     {TR_BUILDING_GRAND_TEMPLE_MENU, "Grand temple" },
     {TR_BUILDING_WORK_CAMP, "Work camp" },
     {TR_BUILDING_WORK_CAMP_DESC, "Laborers gather here to transport materials to construction sites." },
+    {TR_BUILDING_DEPOT, "Cart depot"},
+    {TR_BUILDING_DEPOT_DESC, "Cart depot sends out a cart to transfer goods between warehouses and granaries based on the order. The cart must return to the depot for maintenance before it accepts a new order."},
+    {TR_BUILDING_NONE, "None"},
     {TR_HEADER_HOUSING, "Housing"},
     {TR_ADVISOR_HOUSING_ROOM, "City housing has room available for"},
     {TR_ADVISOR_HOUSING_NO_ROOM, "There is no room available in city housing."},
@@ -749,7 +752,7 @@ static translation_string all_strings[] = {
     {TR_ADVISOR_SICKNESS_LEVEL_LOW, "Disease is a rare occurrence in the city. The high standard of healthcare provided to the vast majority of residents effectively prevents epidemics spreading here."},
     {TR_ADVISOR_SICKNESS_LEVEL_MEDIUM, "Some infectious diseases have appeared in areas of the city with a lacking hygiene, but the situation is under control. A sufficiently high level of healthcare will mitigate the impact of epidemics in the city."},
     {TR_ADVISOR_SICKNESS_LEVEL_HIGH, "Infectious diseases spread in areas of the city having a poor level of hygiene. If the situation is not remedied soon, some buildings may be quarantined. Greater access to healthcare would effectively prevent epidemics from breaking out."},
-    { TR_ADVISOR_SICKNESS_LEVEL_PLAGUE, "The plague has come to some unhealthy areas in the city! Citizens fall ill and buildings have been quarantined or burned to prevent the further spread of disease. Available doctors and surgeons have been requisitioned to decontaminate the afflicted places. Action must be taken!" },
+    {TR_ADVISOR_SICKNESS_LEVEL_PLAGUE, "The plague has come to some unhealthy areas in the city! Citizens fall ill and buildings have been quarantined or burned to prevent the further spread of disease. Available doctors and surgeons have been requisitioned to decontaminate the afflicted places. Action must be taken!" },
     {TR_TOOLTIP_OVERLAY_SICKNESS_NONE, "No disease"},
     {TR_TOOLTIP_OVERLAY_SICKNESS_LOW, "Very few diseases"},
     {TR_TOOLTIP_OVERLAY_SICKNESS_MEDIUM, "A few infectious diseases"},
@@ -844,7 +847,21 @@ static translation_string all_strings[] = {
     {TR_CHEAT_FINISHED_MONUMENTS, "Monuments finished"},
     {TR_CHEAT_UPDATED_MONUMENTS, "Monuments updated"},
     {TR_CHEAT_UNLOCKED_ALL_BUILDINGS, "All buildings unlocked"},
-    {TR_CHEAT_INCITED_RIOT, "Incited a riot"}
+    {TR_CHEAT_INCITED_RIOT, "Incited a riot"},
+    {TR_ORDER_CONDITION_ALWAYS, "Always" },
+    {TR_ORDER_CONDITION_NEVER, "Never" },
+    {TR_ORDER_CONDITION_SOURCE_HAS_MORE_THAN, "Source has more than" },
+    {TR_ORDER_CONDITION_DESTINATION_HAS_LESS_THAN, "Destination has less than" },
+    {TR_BUILDING_INFO_DEPOT_DELIVER, "Deliver" },
+    {TR_BUILDING_INFO_DEPOT_CONDITION, "When" },
+    {TR_BUILDING_INFO_DEPOT_SOURCE, "Source" },
+    {TR_BUILDING_INFO_DEPOT_DESTINATION, "Destination" },
+    {TR_BUILDING_INFO_DEPOT_SELECT_SOURCE_TITLE, "Select source storage" },
+    {TR_BUILDING_INFO_DEPOT_SELECT_DESTINATION_TITLE, "Select destination storage" },
+    {TR_BUILDING_INFO_DEPOT_SELECT_RESOURCE_TITLE, "Select resource" },
+    {TR_FIGURE_INFO_DEPOT_RECALL, "Recall" },
+    {TR_FIGURE_INFO_DEPOT_RETURNING, "Returning" },
+    {TR_FIGURE_INFO_DEPOT_DELIVER, "Deliver" }
 };
 
 void translation_english(const translation_string **strings, int *num_strings)

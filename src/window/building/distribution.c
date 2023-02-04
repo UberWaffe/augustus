@@ -165,6 +165,8 @@ static struct {
     int permission_focus_button_id;
     int building_id;
     int partial_resource_focus_button_id;
+    int storage_building_focus_button_id;
+    int depot_resource_focus_button_id;
     int tooltip_id;
     int dock_scrollbar_position;
     int dock_max_cities_visible;
@@ -656,7 +658,8 @@ void window_building_draw_granary(building_info_context *c)
     building *b = building_get(c->building_id);
     outer_panel_draw(c->x_offset, c->y_offset, c->width_blocks, c->height_blocks);
 
-    lang_text_draw_centered(98, 0, c->x_offset, c->y_offset + 10, BLOCK_SIZE * c->width_blocks, FONT_LARGE_BLACK);
+    text_draw_label_and_number_centered(translation_for(TR_BUILDING_GRANARY), c->building_id, "",
+        c->x_offset, c->y_offset + 10, 16 * c->width_blocks, FONT_LARGE_BLACK, 0);
 
     if (b->has_plague) {
         window_building_play_sound(c, "wavs/clinic.wav");
@@ -917,7 +920,8 @@ void window_building_draw_warehouse(building_info_context *c)
     outer_panel_draw(c->x_offset, c->y_offset, c->width_blocks, c->height_blocks);
     data.building_id = c->building_id;
 
-    lang_text_draw_centered(99, 0, c->x_offset, c->y_offset + 10, BLOCK_SIZE * c->width_blocks, FONT_LARGE_BLACK);
+    text_draw_label_and_number_centered(translation_for(TR_BUILDING_WAREHOUSE), c->building_id, "",
+        c->x_offset, c->y_offset + 10, 16 * c->width_blocks, FONT_LARGE_BLACK, 0);
 
     if (b->has_plague) {
         window_building_play_sound(c, "wavs/clinic.wav");

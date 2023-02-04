@@ -828,6 +828,15 @@ int building_image_get(building *b)
             return assets_get_image_id("Aesthetics", "Gladiator_Statue") +
                 (orientation % 2) * building_properties_for_type(b->type)->rotation_offset;
         }
+        case BUILDING_DEPOT:
+            switch (scenario_property_climate()) {
+            case CLIMATE_NORTHERN:
+                return assets_get_image_id("Logistics", "Cart Depot N ON");
+            case CLIMATE_DESERT:
+                return assets_get_image_id("Logistics", "Cart Depot S ON");
+            default:
+                return assets_get_image_id("Logistics", "Cart Depot C ON");
+            }
         default:
             return 0;
     }
