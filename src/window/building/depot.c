@@ -19,9 +19,12 @@ static void order_set_destination(int index, int param2);
 static void order_set_resource(int index, int param2);
 static void order_set_condition_type(int index, int param2);
 static void order_set_condition_threshold(int index, int param2);
-static void set_order_source(int depot_building_id, int building_id);
-static void set_order_destination(int depot_building_id, int building_id);
 static void set_order_resource(int depot_building_id, int resource_id);
+
+#define DEPOT_BUTTONS_X_OFFSET 32
+#define DEPOT_BUTTONS_Y_OFFSET 204
+#define ROW_HEIGHT 22
+#define MAX_VISIBLE_ROWS 15
 
 static struct {
     int focus_button_id;
@@ -38,8 +41,46 @@ static const translation_key TRANSLATION_KEY_ORDER_CONDITION[4] = {
     TR_ORDER_CONDITION_DESTINATION_HAS_LESS_THAN
 };
 
-#define DEPOT_BUTTONS_X_OFFSET 32
-#define DEPOT_BUTTONS_Y_OFFSET 204
+static void on_scroll(void);
+static scrollbar_type scrollbar = { 0, 0, ROW_HEIGHT * MAX_VISIBLE_ROWS, 432, MAX_VISIBLE_ROWS, on_scroll, 0, 4 };
+
+// field values will be overwritten in draw_depot_select_source_destination
+static generic_button depot_select_storage_buttons[] = {
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
+};
+
+static generic_button depot_select_resource_buttons[] = {
+    {18, 0, 214, 26, set_order_resource, button_none, 0, 1},
+    {232, 0, 214, 26, set_order_resource, button_none, 0, 2},
+    {18, 26, 214, 26, set_order_resource, button_none, 0, 3},
+    {232, 26, 214, 26, set_order_resource, button_none, 0, 4},
+    {18, 52, 214, 26, set_order_resource, button_none, 0, 5},
+    {232, 52, 214, 26, set_order_resource, button_none, 0, 6},
+    {18, 78, 214, 26, set_order_resource, button_none, 0, 7},
+    {232, 78, 214, 26, set_order_resource, button_none, 0, 8},
+    {18, 104, 214, 26, set_order_resource, button_none, 0, 9},
+    {232, 104, 214, 26, set_order_resource, button_none, 0, 10},
+    {18, 130, 214, 26, set_order_resource, button_none, 0, 11},
+    {232, 130, 214, 26, set_order_resource, button_none, 0, 12},
+    {18, 156, 214, 26, set_order_resource, button_none, 0, 13},
+    {232, 156, 214, 26, set_order_resource, button_none, 0, 14},
+    {18, 182, 214, 26, set_order_resource, button_none, 0, 15},
+};
+
 static generic_button depot_order_buttons[] = {
     {100, 0, 26, 26, order_set_resource, button_none, 1, 0},
     {100, 56, 284, 22, order_set_source, button_none, 2, 0},
@@ -48,21 +89,19 @@ static generic_button depot_order_buttons[] = {
     {384, 30, 32, 22, order_set_condition_threshold, button_none, 5, 0},
 };
 
-static int storage_buildings_count() {
+static int storage_buildings_count(void)
+{
     int count = 0;
-    for (int i = 1; i < building_count(); i++) {
-        building *b = building_get(i);
-        if (b->type == BUILDING_GRANARY || b->type == BUILDING_WAREHOUSE) {
-            count++;
-        }
+    building *b = building_first_of_type(BUILDING_GRANARY);
+    for (building *b = building_first_of_type(BUILDING_GRANARY); b; b = b->next_of_type) {
+        count++;
+    }
+    for (building *b = building_first_of_type(BUILDING_WAREHOUSE); b; b = b->next_of_type) {
+        count++;
     }
     return count;
 }
 
-#define ROW_HEIGHT 22
-#define MAX_VISIBLE_ROWS 15
-static void on_scroll(void);
-static scrollbar_type scrollbar = { 0, 0, ROW_HEIGHT * MAX_VISIBLE_ROWS, 432, MAX_VISIBLE_ROWS, on_scroll, 0, 4 };
 void window_building_depot_init()
 {
     int total = storage_buildings_count();
@@ -174,25 +213,6 @@ void window_building_draw_depot_select_source(building_info_context *c)
     draw_order_source_destination_background(c, translation_for(TR_BUILDING_INFO_DEPOT_SELECT_SOURCE_TITLE));
 }
 
-// field values will be overwritten in draw_depot_select_source_destination
-static generic_button depot_select_storage_buttons[] = {
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-    {0, 0, 0, ROW_HEIGHT, button_none, button_none, 0, 0},
-};
-
 void draw_depot_select_source_destination(building_info_context *c) {
     int y_offset = window_building_get_vertical_offset(c, 28);
 
@@ -201,25 +221,39 @@ void draw_depot_select_source_destination(building_info_context *c) {
     scrollbar_draw(&scrollbar);
 
     int index = 0, offset = scrollbar.scroll_position;
-    for (int i = 1; i < building_count(); i++) {
-        building *b = building_get(i);
-        if (b->type == BUILDING_GRANARY || b->type == BUILDING_WAREHOUSE) {
-            if (index == MAX_VISIBLE_ROWS) {
-                break;
-            }
-            if (offset > 0) {
-                offset--;
-            }
-            else {
-                button_border_draw(c->x_offset + 18, y_offset + 46 + ROW_HEIGHT * index,
-                    16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
-                    22, data.storage_building_focus_button_id == index + 1);
-                text_draw_label_and_number_centered(translation_for(building_translation_key(b)),
-                    b->id, "", c->x_offset + 32, y_offset + 52 + ROW_HEIGHT * index,
-                    16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
-                    FONT_SMALL_PLAIN, 0);
-                index++;
-            }
+
+    for (building *b = building_first_of_type(BUILDING_GRANARY); b; b = b->next_of_type) {
+        if (index == MAX_VISIBLE_ROWS) {
+            break;
+        }
+        if (offset > 0) {
+            offset--;
+        } else {
+            button_border_draw(c->x_offset + 18, y_offset + 46 + ROW_HEIGHT * index,
+                16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
+                22, data.storage_building_focus_button_id == index + 1);
+            text_draw_label_and_number_centered(translation_for(building_translation_key(b)),
+                b->id, "", c->x_offset + 32, y_offset + 52 + ROW_HEIGHT * index,
+                16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
+                FONT_SMALL_PLAIN, 0);
+            index++;
+        }
+    }
+    for (building *b = building_first_of_type(BUILDING_WAREHOUSE); b; b = b->next_of_type) {
+        if (index == MAX_VISIBLE_ROWS) {
+            break;
+        }
+        if (offset > 0) {
+            offset--;
+        } else {
+            button_border_draw(c->x_offset + 18, y_offset + 46 + ROW_HEIGHT * index,
+                16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
+                22, data.storage_building_focus_button_id == index + 1);
+            text_draw_label_and_number_centered(translation_for(building_translation_key(b)),
+                b->id, "", c->x_offset + 32, y_offset + 52 + ROW_HEIGHT * index,
+                16 * (c->width_blocks - 2) - 4 - (scrollbar.max_scroll_position > 0 ? 39 : 0),
+                FONT_SMALL_PLAIN, 0);
+            index++;
         }
     }
 }
@@ -227,6 +261,20 @@ void draw_depot_select_source_destination(building_info_context *c) {
 void window_building_draw_depot_select_source_foreground(building_info_context *c)
 {
     draw_depot_select_source_destination(c);
+}
+
+static void set_order_source(int depot_building_id, int building_id)
+{
+    building *b = building_get(depot_building_id);
+    b->data.depot.current_order.src_storage_id = building_id;
+    window_building_info_depot_return_to_main_window();
+}
+
+static void set_order_destination(int depot_building_id, int building_id)
+{
+    building *b = building_get(depot_building_id);
+    b->data.depot.current_order.dst_storage_id = building_id;
+    window_building_info_depot_return_to_main_window();
 }
 
 int handle_mouse_depot_select_source_destination(const mouse *m, building_info_context *c, int is_source)
@@ -247,21 +295,32 @@ int handle_mouse_depot_select_source_destination(const mouse *m, building_info_c
         depot_select_storage_buttons[i].parameter1 = 0;
         depot_select_storage_buttons[i].parameter2 = 0;
     }
-    for (int i = 1; i < building_count(); i++) {
-        building *b = building_get(i);
-        if (b->type == BUILDING_GRANARY || b->type == BUILDING_WAREHOUSE) {
-            if (index == MAX_VISIBLE_ROWS) {
-                break;
-            }
-            if (offset > 0) {
-                offset--;
-            }
-            else {
-                depot_select_storage_buttons[index].left_click_handler = is_source ? set_order_source : set_order_destination;
-                depot_select_storage_buttons[index].parameter1 = c->building_id;
-                depot_select_storage_buttons[index].parameter2 = i;
-                index++;
-            }
+
+
+    for (building *b = building_first_of_type(BUILDING_GRANARY); b; b = b->next_of_type) {
+        if (index == MAX_VISIBLE_ROWS) {
+            break;
+        }
+        if (offset > 0) {
+            offset--;
+        } else {
+            depot_select_storage_buttons[index].left_click_handler = is_source ? set_order_source : set_order_destination;
+            depot_select_storage_buttons[index].parameter1 = c->building_id;
+            depot_select_storage_buttons[index].parameter2 = b->id;
+            index++;
+        }
+    }
+    for (building *b = building_first_of_type(BUILDING_WAREHOUSE); b; b = b->next_of_type) {
+        if (index == MAX_VISIBLE_ROWS) {
+            break;
+        }
+        if (offset > 0) {
+            offset--;
+        } else {
+            depot_select_storage_buttons[index].left_click_handler = is_source ? set_order_source : set_order_destination;
+            depot_select_storage_buttons[index].parameter1 = c->building_id;
+            depot_select_storage_buttons[index].parameter2 = b->id;
+            index++;
         }
     }
 
@@ -272,20 +331,6 @@ int handle_mouse_depot_select_source_destination(const mouse *m, building_info_c
 int window_building_handle_mouse_depot_select_source(const mouse *m, building_info_context *c)
 {
     return handle_mouse_depot_select_source_destination(m, c, 1);
-}
-
-static void set_order_source(int depot_building_id, int building_id)
-{
-    building *b = building_get(depot_building_id);
-    b->data.depot.current_order.src_storage_id = building_id;
-    window_building_info_depot_return_to_main_window();
-}
-
-static void set_order_destination(int depot_building_id, int building_id)
-{
-    building *b = building_get(depot_building_id);
-    b->data.depot.current_order.dst_storage_id = building_id;
-    window_building_info_depot_return_to_main_window();
 }
 
 void window_building_draw_depot_select_destination(building_info_context *c)
@@ -308,23 +353,12 @@ static void order_set_resource(int index, int param2)
     window_building_info_depot_select_resource();
 }
 
-static generic_button depot_select_resource_buttons[] = {
-    {18, 0, 214, 26, set_order_resource, button_none, 0, 1},
-    {232, 0, 214, 26, set_order_resource, button_none, 0, 2},
-    {18, 26, 214, 26, set_order_resource, button_none, 0, 3},
-    {232, 26, 214, 26, set_order_resource, button_none, 0, 4},
-    {18, 52, 214, 26, set_order_resource, button_none, 0, 5},
-    {232, 52, 214, 26, set_order_resource, button_none, 0, 6},
-    {18, 78, 214, 26, set_order_resource, button_none, 0, 7},
-    {232, 78, 214, 26, set_order_resource, button_none, 0, 8},
-    {18, 104, 214, 26, set_order_resource, button_none, 0, 9},
-    {232, 104, 214, 26, set_order_resource, button_none, 0, 10},
-    {18, 130, 214, 26, set_order_resource, button_none, 0, 11},
-    {232, 130, 214, 26, set_order_resource, button_none, 0, 12},
-    {18, 156, 214, 26, set_order_resource, button_none, 0, 13},
-    {232, 156, 214, 26, set_order_resource, button_none, 0, 14},
-    {18, 182, 214, 26, set_order_resource, button_none, 0, 15},
-};
+static void set_order_resource(int depot_building_id, int resource_id)
+{
+    building *b = building_get(depot_building_id);
+    b->data.depot.current_order.resource_type = resource_id;
+    window_building_info_depot_return_to_main_window();
+}
 
 void window_building_draw_depot_select_resource(building_info_context *c)
 {
@@ -360,11 +394,4 @@ int window_building_handle_mouse_depot_select_resource(const mouse *m, building_
     }
     return generic_buttons_handle_mouse(m, c->x_offset, c->y_offset, depot_select_resource_buttons,
         15, &data.depot_resource_focus_button_id);
-}
-
-static void set_order_resource(int depot_building_id, int resource_id)
-{
-    building *b = building_get(depot_building_id);
-    b->data.depot.current_order.resource_type = resource_id;
-    window_building_info_depot_return_to_main_window();
 }

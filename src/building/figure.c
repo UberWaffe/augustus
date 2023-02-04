@@ -1697,7 +1697,7 @@ static void spawn_figure_watchtower(building *b)
     }
 }
 
-static void spawn_figure_depot(building* b)
+static void spawn_figure_depot(building *b)
 {
     check_labor_problem(b);
     if (has_figure_of_type(b, FIGURE_DEPOT_CART_PUSHER)) {
@@ -1725,7 +1725,7 @@ static void spawn_figure_depot(building* b)
         b->figure_spawn_delay++;
         if (b->figure_spawn_delay > spawn_delay) {
             b->figure_spawn_delay = 0;
-            figure* f = figure_create(FIGURE_DEPOT_CART_PUSHER, road.x, road.y, DIR_0_TOP);
+            figure *f = figure_create(FIGURE_DEPOT_CART_PUSHER, road.x, road.y, DIR_0_TOP);
             f->action_state = FIGURE_ACTION_231_DEPOT_CART_PUSHER_INITIAL;
             f->building_id = b->id;
             b->figure_id = f->id;

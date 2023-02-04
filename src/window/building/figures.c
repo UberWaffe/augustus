@@ -390,8 +390,8 @@ static void draw_depot_cartpusher(building_info_context* c, figure* f)
     }
 
     int resource_type = f->current_order.resource_type;
-    building* src = building_get(f->current_order.src_storage_id);
-    building* dst = building_get(f->current_order.dst_storage_id);
+    building *src = building_get(f->current_order.src_storage_id);
+    building *dst = building_get(f->current_order.dst_storage_id);
 
     button_border_draw(c->x_offset + 90, c->y_offset + 160, 100, 22,
         data.depot_focus_button_id == 1 || is_depot_cartpusher_recalled(f));
