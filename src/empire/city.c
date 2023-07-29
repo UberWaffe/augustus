@@ -170,6 +170,12 @@ int empire_can_produce_resource_locally(int resource)
     return 0;
 }
 
+int can_produce_resource_venus_ceres_wine()
+{
+    return building_monument_working(BUILDING_GRAND_TEMPLE_CERES) &&
+        building_monument_working(BUILDING_GRAND_TEMPLE_VENUS);
+}
+
 int empire_can_produce_resource(int resource)
 {
     resource_supply_chain chain[RESOURCE_SUPPLY_CHAIN_MAX_SIZE];

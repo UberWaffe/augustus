@@ -3,6 +3,7 @@
 #include "assets/assets.h"
 #include "building/granary.h"
 #include "building/industry.h"
+#include "building/monument.h"
 #include "building/storage.h"
 #include "building/warehouse.h"
 #include "city/health.h"
@@ -20,7 +21,7 @@
 #include "map/routing.h"
 #include "map/routing_terrain.h"
 
-#define DEPOT_CART_PUSHER_SPEED 1
+#define DEPOT_CART_PUSHER_SPEED 2
 
 #define DEPOT_CART_PUSHER_FOOD_CAPACITY 16
 #define DEPOT_CART_PUSHER_OTHER_CAPACITY 4
@@ -34,6 +35,14 @@ static const int CART_OFFSETS_Y[8] = { -5,  6, 17, 40,  15,   7,  -3, -6 };
 static int cartpusher_carries_food(figure *f)
 {
     return resource_is_food(f->resource_id);
+}
+
+static int depot_cartpusher_percentage_speed(figure* f) {
+    // Mercury grand temple base bonus
+    if (building_monument_working(BUILDING_GRAND_TEMPLE_MERCURY)) {
+        return 150;
+    }
+    return 0;
 }
 
 static void set_cart_graphic(figure *f)
@@ -229,7 +238,8 @@ void figure_depot_cartpusher_action(figure *f)
     figure_image_increase_offset(f, 12);
     f->cart_image_id = 0;
     int speed_factor = DEPOT_CART_PUSHER_SPEED;
-    int percentage_speed = 0;
+    int percentage_speed = depot_cartpusher_percentage_speed(f);
+    int road_network_id = map_road_network_get(f->grid_offset);
     f->terrain_usage = TERRAIN_USAGE_PREFER_ROADS_HIGHWAY;
     building *b = building_get(f->building_id);
 

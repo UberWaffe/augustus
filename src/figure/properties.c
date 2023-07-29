@@ -68,8 +68,8 @@ static const figure_properties properties[FIGURE_TYPE_MAX] = {
     },
     [FIGURE_FORT_LEGIONARY] = {
     .category = FIGURE_CATEGORY_ARMED,
-    .max_damage = 150, .attack_value = 10, .defense_value = 2,
-    .missile_defense_value = 0, .missile_attack_value = 2, .missile_delay = 150
+    .max_damage = 150, .attack_value = 18, .defense_value = 5,
+    .missile_defense_value = 5, .missile_attack_value = 2, .missile_delay = 150
     },
     [FIGURE_FORT_STANDARD] = {
     .category = FIGURE_CATEGORY_INACTIVE,
@@ -314,7 +314,7 @@ static const figure_properties properties[FIGURE_TYPE_MAX] = {
     [FIGURE_BALLISTA] = {
     .category = FIGURE_CATEGORY_INACTIVE,
     .max_damage = 100, .attack_value = 0, .defense_value = 0,
-    .missile_defense_value = 0, .missile_attack_value = 0, .missile_delay = 200
+    .missile_defense_value = 0, .missile_attack_value = 0, .missile_delay = 100
     },
     [FIGURE_CREATURE] = {
     .category = FIGURE_CATEGORY_INACTIVE,

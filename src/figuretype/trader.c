@@ -45,7 +45,7 @@
 static int trader_bonus_speed(void)
 {
     if (building_monument_working(BUILDING_GRAND_TEMPLE_MERCURY)) {
-        return 25;
+        return 150;
     } else {
         return 0;
     }
@@ -55,7 +55,7 @@ static int trader_bonus_speed(void)
 static int sea_trader_bonus_speed(void)
 {
     if (building_monument_working(BUILDING_GRAND_TEMPLE_NEPTUNE)) {
-        return 25;
+        return 150;
     } else {
         return 0;
     }
@@ -974,9 +974,9 @@ int figure_trade_land_trade_units(void)
 
         int pct_workers = calc_percentage(b->num_workers, model_get_building(b->type)->laborers);
         if (pct_workers >= 100) { // full laborers
-            add_unit = 4;
+            add_unit = 12;
         } else if (pct_workers > 0) {
-            add_unit = 2;
+            add_unit = 6;
         }
         unit += add_unit;
     }
@@ -1009,9 +1009,9 @@ int figure_trade_sea_trade_units(void)
 
         int pct_workers = calc_percentage(b->num_workers, model_get_building(b->type)->laborers);
         if (pct_workers >= 100) { // full laborers
-            add_unit = 6;
+            add_unit = 48;
         } else if (pct_workers > 0) {
-            add_unit = 3;
+            add_unit = 12;
         }
         unit += add_unit;
     }

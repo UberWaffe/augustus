@@ -11,6 +11,9 @@
 #include "map/point.h"
 #include "sound/effect.h"
 
+#define FIGURE_BOLT_DAMAGE 60
+#define MISSILE_DEFAULT_DAMAGE 10
+
 static const int CLOUD_TILE_OFFSETS[] = {0, 0, 0, 1, 1, 2};
 
 static const int CLOUD_CC_OFFSETS[] = {0, 7, 14, 7, 14, 7};

@@ -251,18 +251,12 @@ static void cause_plague(int total_people)
 static void adjust_sickness_level_in_house(building *b, int health, int population_health_offset, int hospital_bonus)
 {
     if (!b->has_plague && b->sickness_level) {
-        int delta;
-        // Case-specific health reduction when health is perfect and pop is high enough
-        if (population_health_offset == 10 && health == 100) {
-            delta = -1;
-        } else {
-            delta = 10 - (health / 10) * 2;
-            delta += population_health_offset;
-        }
+        int delta = 10 - (calc_bound(health, 0, 100) / 9) * 2;
+        delta += calc_bound(population_health_offset, 0, 10);
 
-        // Neptune GT reduces the delta by 5
+        // Neptune GT reduces the delta by 10
         if (building_monument_working(BUILDING_GRAND_TEMPLE_NEPTUNE)) {
-            delta -= 5;
+            delta -= 10;
         }
 
         // If delta is positive, it is reduced depending on house health, global health and hospital access

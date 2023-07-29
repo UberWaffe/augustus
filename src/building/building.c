@@ -540,7 +540,7 @@ int building_get_levy(const building *b)
         (b->type >= BUILDING_GRAND_TEMPLE_CERES && b->type <= BUILDING_GRAND_TEMPLE_VENUS) ||
         b->type == BUILDING_ORACLE || b->type == BUILDING_NYMPHAEUM || b->type == BUILDING_SMALL_MAUSOLEUM ||
         b->type == BUILDING_LARGE_MAUSOLEUM)) {
-        levy = (levy / 4) * 3;
+        levy = (levy / 2);
     }
 
     // Mars module 1 bonus

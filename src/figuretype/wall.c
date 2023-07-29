@@ -19,8 +19,10 @@
 #include "map/terrain.h"
 #include "sound/effect.h"
 
-#define BALLISTA_RANGE 15
+#define BALLISTA_RANGE 27
+#define BALLISTA_DELAY 10
 #define WATCHTOWER_RANGE 12
+#define WATCHTOWER_DELAY 15
 
 static const int BALLISTA_FIRING_OFFSETS[] = {
     0, 1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -75,7 +77,7 @@ void figure_ballista_action(figure *f)
             break;
         case FIGURE_ACTION_180_BALLISTA_CREATED:
             f->wait_ticks++;
-            if (f->wait_ticks > 20) {
+            if (f->wait_ticks > BALLISTA_DELAY) {
                 f->wait_ticks = 0;
                 map_point tile;
                 if (figure_combat_get_missile_target_for_soldier(f, BALLISTA_RANGE, &tile)) {
@@ -473,7 +475,7 @@ void figure_watchtower_archer_action(figure *f)
             break;
         case FIGURE_ACTION_223_ARCHER_GUARDING:
             f->wait_ticks++;
-            if (f->wait_ticks > 20) {
+            if (f->wait_ticks > WATCHTOWER_DELAY) {
                 f->wait_ticks = 0;
                 map_point tile;
                 if (figure_combat_get_missile_target_for_soldier(f, WATCHTOWER_RANGE, &tile)) {

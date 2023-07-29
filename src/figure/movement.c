@@ -19,10 +19,12 @@
 #include "map/routing_terrain.h"
 #include "map/terrain.h"
 
-#define PALISADE_HP   60
+#define PALISADE_HP   75
 #define BUILDING_HP   10
-#define WALL_HP      200
-#define GATEHOUSE_HP 150
+#define WALL_HP      250
+#define GATEHOUSE_HP 200
+
+#define TERRAIN_HIGHWAY_SPEEDUP_MULT 3
 
 static void advance_tick(figure *f)
 {
@@ -286,7 +288,7 @@ static void walk_ticks(figure *f, int num_ticks, int roaming_enabled)
 {
     int terrain = map_terrain_get(map_grid_offset(f->x, f->y));
     if (terrain & TERRAIN_HIGHWAY) {
-        num_ticks *= 2;
+        num_ticks *= TERRAIN_HIGHWAY_SPEEDUP_MULT;
     }
     while (num_ticks > 0) {
         num_ticks--;
@@ -415,11 +417,13 @@ void figure_movement_move_ticks_with_percentage(figure* f, int num_ticks, int ti
     int progress = f->progress_to_next_tick + tick_percentage;
 
     if (progress >= 100) {
-        progress -= 100;
-        num_ticks++;
+        int full_ticks = progress / 100;
+        progress -= (100 * full_ticks);
+        num_ticks += full_ticks;
     } else if (progress <= -100) {
-        progress += 100;
-        num_ticks--;
+        int full_ticks = progress / -100;
+        progress += (100 * full_ticks);
+        num_ticks -= full_ticks;
     }
     f->progress_to_next_tick = (char) progress;
 

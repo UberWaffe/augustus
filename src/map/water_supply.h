@@ -14,6 +14,7 @@ enum {
 int map_water_supply_is_well_unnecessary(int well_id, int radius);
 int map_water_supply_fountain_radius(void);
 int map_water_supply_reservoir_radius(void);
+int map_water_supply_gt_neptune_radius(void);
 int map_water_supply_well_radius(void);
 
 #endif // MAP_WATER_SUPPLY_H
