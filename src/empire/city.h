@@ -44,6 +44,10 @@ int empire_can_export_resource(int resource);
 
 int empire_can_produce_resource_locally(int resource);
 
+int can_produce_resource_venus_wine();
+
+int can_produce_resource_venus_ceres_wine();
+
 int empire_can_produce_resource(int resource);
 
 int empire_can_produce_resource_naturally(int resource);

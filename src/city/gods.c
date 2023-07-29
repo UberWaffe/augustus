@@ -347,6 +347,45 @@ void city_gods_calculate_moods(int update_moods)
             city_data.religion.gods[min_god].target_happiness -= 25;
         }
     }
+
+    int num_pantheon = building_count_active(BUILDING_PANTHEON);
+    for (int i = 0; i < MAX_GODS; i++) {
+        if (num_pantheon >= 1) {
+            if (city_data.religion.gods[i].target_happiness >= 90) {
+                city_data.religion.gods[i].target_happiness = 100;
+            } else {
+                city_data.religion.gods[i].target_happiness += 10;
+            }
+        }
+
+        // bonus for grand temaples and patheon
+        int num_grand_temples = 0;
+        switch (i) {
+            case GOD_CERES:
+                num_grand_temples = building_count_active(BUILDING_GRAND_TEMPLE_CERES);
+                break;
+            case GOD_NEPTUNE:
+                num_grand_temples = building_count_active(BUILDING_GRAND_TEMPLE_NEPTUNE);
+                break;
+            case GOD_MERCURY:
+                num_grand_temples = building_count_active(BUILDING_GRAND_TEMPLE_MERCURY);
+                break;
+            case GOD_MARS:
+                num_grand_temples = building_count_active(BUILDING_GRAND_TEMPLE_MARS);
+                break;
+            case GOD_VENUS:
+                num_grand_temples = building_count_active(BUILDING_GRAND_TEMPLE_VENUS);
+                break;
+        }
+        if (num_grand_temples >= 1) {
+            if (city_data.religion.gods[i].target_happiness >= 80) {
+                city_data.religion.gods[i].target_happiness = 100;
+            } else {
+                city_data.religion.gods[i].target_happiness += 20;
+            }
+        }
+    }
+
     int min_happiness;
     if (city_data.population.population < 100) {
         min_happiness = 50;

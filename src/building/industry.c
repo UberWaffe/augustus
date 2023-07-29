@@ -16,7 +16,7 @@
 #include "map/building_tiles.h"
 #include "scenario/property.h"
 
-#define MAX_PROGRESS_VENUS_GT 400
+#define MAX_PROGRESS_VENUS_GT 200
 #define DENARII_MINTED_PER_PRODUCTION 100
 #define DENARII_COST_PER_GOLD 600
 #define MAX_STORAGE 16

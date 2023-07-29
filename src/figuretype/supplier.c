@@ -18,6 +18,7 @@
 #include "map/road_network.h"
 
 #define MAX_DISTANCE 40
+#define SUPPLIER_SPEED 1
 
 int figure_supplier_create_delivery_boy(int leader_id, int first_figure_id, int type)
 {
@@ -218,7 +219,7 @@ void figure_supplier_action(figure *f)
             figure_combat_handle_corpse(f);
             break;
         case FIGURE_ACTION_145_SUPPLIER_GOING_TO_STORAGE:
-            figure_movement_move_ticks(f, 1);
+            figure_movement_move_ticks(f, SUPPLIER_SPEED);
             if (f->direction == DIR_FIGURE_AT_DESTINATION) {
                 f->wait_ticks = 0;
                 int id = f->id;
@@ -253,7 +254,7 @@ void figure_supplier_action(figure *f)
             }
             break;
         case FIGURE_ACTION_146_SUPPLIER_RETURNING:
-            figure_movement_move_ticks(f, 1);
+            figure_movement_move_ticks(f, SUPPLIER_SPEED);
             if (f->direction == DIR_FIGURE_AT_DESTINATION || f->direction == DIR_FIGURE_LOST) {
                 if (f->direction == DIR_FIGURE_AT_DESTINATION && f->type == FIGURE_LIGHTHOUSE_SUPPLIER) {
                     building_get(f->building_id)->resources[RESOURCE_TIMBER] += 100;
@@ -367,7 +368,7 @@ void figure_fort_supplier_action(figure *f)
             figure_combat_handle_corpse(f);
             break;
         case FIGURE_ACTION_236_SUPPLY_POST_GOING_TO_FORT:
-            figure_movement_move_ticks(f, 1);
+            figure_movement_move_ticks(f, SUPPLIER_SPEED);
             if (f->direction == DIR_FIGURE_AT_DESTINATION) {
                 f->action_state = FIGURE_ACTION_237_SUPPLY_POST_RETURNING_FROM_FORT;
                 f->destination_x = f->source_x;
@@ -383,7 +384,7 @@ void figure_fort_supplier_action(figure *f)
             if (f->wait_ticks) {
                 f->wait_ticks--;
             } else {
-                figure_movement_move_ticks(f, 1);
+                figure_movement_move_ticks(f, SUPPLIER_SPEED);
                 if (f->direction == DIR_FIGURE_REROUTE) {
                     figure_route_remove(f);
                 } else if (f->direction == DIR_FIGURE_AT_DESTINATION || f->direction == DIR_FIGURE_LOST) {

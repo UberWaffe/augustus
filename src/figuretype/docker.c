@@ -23,6 +23,7 @@
 #include "map/road_access.h"
 
 #define INFINITE 10000
+#define DOCKER_SPEED 2
 
 static int try_import_resource(int building_id, int resource, int city_id)
 {
@@ -451,7 +452,7 @@ void figure_docker_action(figure *f)
             break;
         case FIGURE_ACTION_135_DOCKER_IMPORT_GOING_TO_STORAGE:
             set_cart_graphic(f);
-            figure_movement_move_ticks(f, 1);
+            figure_movement_move_ticks(f, DOCKER_SPEED);
             if (f->direction == DIR_FIGURE_AT_DESTINATION) {
                 f->action_state = FIGURE_ACTION_139_DOCKER_IMPORT_AT_STORAGE;
                 f->wait_ticks = 0;
@@ -471,7 +472,7 @@ void figure_docker_action(figure *f)
             break;
         case FIGURE_ACTION_136_DOCKER_EXPORT_GOING_TO_STORAGE:
             f->cart_image_id = image_group(GROUP_FIGURE_CARTPUSHER_CART); // empty
-            figure_movement_move_ticks(f, 1);
+            figure_movement_move_ticks(f, DOCKER_SPEED);
             if (f->direction == DIR_FIGURE_AT_DESTINATION) {
                 f->action_state = FIGURE_ACTION_140_DOCKER_EXPORT_AT_STORAGE;
             } else if (f->direction == DIR_FIGURE_REROUTE) {
@@ -490,7 +491,7 @@ void figure_docker_action(figure *f)
             break;
         case FIGURE_ACTION_137_DOCKER_EXPORT_RETURNING:
             set_cart_graphic(f);
-            figure_movement_move_ticks(f, 1);
+            figure_movement_move_ticks(f, DOCKER_SPEED);
             if (f->direction == DIR_FIGURE_AT_DESTINATION) {
                 f->action_state = FIGURE_ACTION_134_DOCKER_EXPORT_QUEUE;
                 f->wait_ticks = 0;
@@ -505,7 +506,7 @@ void figure_docker_action(figure *f)
             break;
         case FIGURE_ACTION_138_DOCKER_IMPORT_RETURNING:
             set_cart_graphic(f);
-            figure_movement_move_ticks(f, 1);
+            figure_movement_move_ticks(f, DOCKER_SPEED);
             if (f->direction == DIR_FIGURE_AT_DESTINATION) {
                 set_docker_as_idle(f);
             } else if (f->direction == DIR_FIGURE_REROUTE) {

@@ -236,7 +236,7 @@ static int soldier_percentage_speed(figure_type type)
     if (city_games_naval_battle_active()) {
         switch (type) {
         case FIGURE_FORT_LEGIONARY:
-            return 25;
+            return 50;
         case FIGURE_FORT_JAVELIN:
             return 50;
         case FIGURE_FORT_MOUNTED:
@@ -266,7 +266,7 @@ void figure_soldier_action(figure *f)
     } else if (f->type == FIGURE_FORT_JAVELIN) {
         speed_factor = 2;
     } else {
-        speed_factor = 1;
+        speed_factor = 2;
     }
     int layout = m->layout;
     if (f->formation_at_rest || f->action_state == FIGURE_ACTION_81_SOLDIER_GOING_TO_FORT) {

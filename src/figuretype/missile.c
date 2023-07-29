@@ -10,6 +10,9 @@
 #include "map/point.h"
 #include "sound/effect.h"
 
+#define FIGURE_BOLT_DAMAGE 60
+#define MISSILE_DEFAULT_DAMAGE 10
+
 static const int CLOUD_TILE_OFFSETS[] = {0, 0, 0, 1, 1, 2};
 
 static const int CLOUD_CC_OFFSETS[] = {0, 7, 14, 7, 14, 7};
@@ -55,9 +58,9 @@ void figure_create_missile(int building_id, int x, int y, int x_dst, int y_dst, 
     figure *f = figure_create(type, x, y, DIR_0_TOP);
     if (f->id) {
         if (type == FIGURE_BOLT || type == FIGURE_FRIENDLY_ARROW) {
-            f->missile_damage = 60;
+            f->missile_damage = FIGURE_BOLT_DAMAGE;
         } else {
-            f->missile_damage = 10;
+            f->missile_damage = MISSILE_DEFAULT_DAMAGE;
         }
         f->building_id = building_id;
         f->destination_x = x_dst;

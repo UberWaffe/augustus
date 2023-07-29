@@ -24,6 +24,7 @@
 
 #define MAX_QUEUE 1000
 #define RESERVOIR_RADIUS 10
+#define GT_NEPTUNE_RADIUS 36
 #define WELL_RADIUS 2
 #define FOUNTAIN_RADIUS 4
 
@@ -202,7 +203,7 @@ void map_water_supply_update_reservoir_fountain(void)
     // Neptune GT module 2 bonus
     if (building_monument_gt_module_is_active(NEPTUNE_MODULE_2_CAPACITY_AND_WATER)) {
         building *b = building_get(building_monument_get_neptune_gt());
-        map_terrain_add_with_radius(b->x, b->y, 7, map_water_supply_reservoir_radius(), TERRAIN_RESERVOIR_RANGE);
+        map_terrain_add_with_radius(b->x, b->y, 7, map_water_supply_gt_neptune_radius(), TERRAIN_RESERVOIR_RANGE);
     }
 
     // fountains
@@ -318,7 +319,7 @@ int map_water_supply_fountain_radius(void)
 {
     int radius = scenario_property_climate() == CLIMATE_DESERT ? FOUNTAIN_RADIUS - 1 : FOUNTAIN_RADIUS;
     if (building_monument_working(BUILDING_GRAND_TEMPLE_NEPTUNE)) {
-        radius++;
+        radius += 2;
     }
 
     return radius;
@@ -328,9 +329,15 @@ int map_water_supply_reservoir_radius(void)
 {
     int radius = RESERVOIR_RADIUS;
     if (building_monument_working(BUILDING_GRAND_TEMPLE_NEPTUNE)) {
-        radius += 2;
+        radius += 4;
     }
 
+    return radius;
+}
+
+int map_water_supply_gt_neptune_radius(void)
+{
+    int radius = GT_NEPTUNE_RADIUS;
     return radius;
 }
 

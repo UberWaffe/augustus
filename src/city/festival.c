@@ -7,6 +7,7 @@
 #include "city/data_private.h"
 #include "city/emperor.h"
 #include "city/finance.h"
+#include "city/gods.h"
 #include "city/message.h"
 #include "city/sentiment.h"
 #include "core/config.h"
@@ -17,7 +18,7 @@ auto_festival autofestivals[5] = {
     {1, 6}, // neptune, july
     {2, 4}, // mercury, may
     {3, 2}, // mars, march
-    {4, 3}, // venus, april
+    {4, 8}, // venus, september
 };
 
 int city_festival_is_planned(void)
@@ -221,8 +222,8 @@ void city_festival_update(void)
     }
 
     if (building_monument_working(BUILDING_PANTHEON)) {
-        for (int god = 0; god <= 4; ++god) {
-            if (game_time_total_years() % 5 == god && game_time_month() == autofestivals[god].month) {
+        for (int god = 0; god < MAX_GODS; ++god) {
+            if (game_time_month() == autofestivals[god].month) {
                 throw_auto_festival(god);
             }
         }
