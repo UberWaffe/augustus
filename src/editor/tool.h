@@ -48,4 +48,6 @@ void editor_tool_update_use(const map_tile *tile);
 
 void editor_tool_end_use(const map_tile *tile);
 
+void editor_tool_set_terrain(int grid_offset, int terrain_type);
+
 #endif // EDITOR_TOOL_H

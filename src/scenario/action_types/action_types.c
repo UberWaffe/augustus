@@ -13,6 +13,7 @@
 #include "city/ratings.h"
 #include "core/random.h"
 #include "city/trade.h"
+#include "editor/tool.h"
 #include "empire/city.h"
 #include "empire/object.h"
 #include "empire/trade_prices.h"
@@ -606,5 +607,28 @@ int scenario_action_type_tax_rate_set_execute(scenario_action_t *action)
 
     city_finance_set_tax_percentage(new_rate);
 
+    return 1;
+}
+
+int scenario_action_type_terrain_set_to_execute(scenario_action_t *action)
+{
+    int grid_offset = action->parameter1;
+    int block_radius = action->parameter2;
+    int terrain_type = action->parameter3;
+
+    if (!map_grid_is_valid_offset(grid_offset)) {
+        return 0;
+    }
+
+    for (int y = -block_radius; y <= block_radius; y++) {
+        for (int x = -block_radius; x <= block_radius; x++) {
+            int current_grid_offset = map_grid_add_delta(grid_offset, x, y);
+            if (!map_grid_is_valid_offset(current_grid_offset)) {
+                continue;
+            }
+            editor_tool_set_terrain(current_grid_offset, terrain_type);
+        }
+    }
+    
     return 1;
 }

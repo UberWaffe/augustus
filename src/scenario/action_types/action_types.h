@@ -62,4 +62,6 @@ int scenario_action_type_show_custom_message_execute(scenario_action_t *action);
 
 int scenario_action_type_tax_rate_set_execute(scenario_action_t *action);
 
+int scenario_action_type_terrain_set_to_execute(scenario_action_t *action);
+
 #endif // ACTION_TYPES_H

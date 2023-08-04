@@ -227,6 +227,44 @@ static void add_terrain(const void *tile_data, int dx, int dy)
     map_terrain_set(grid_offset, terrain);
 }
 
+void editor_tool_set_terrain(int grid_offset, int terrain_type)
+{
+    if (!map_grid_is_valid_offset(grid_offset)) {
+        return;
+    }
+    int terrain = map_terrain_get(grid_offset);
+    if (terrain & TERRAIN_BUILDING) {
+        int x = map_grid_offset_to_x(grid_offset);
+        int y = map_grid_offset_to_y(grid_offset);
+        map_building_tiles_remove(0, x, y);
+        terrain = map_terrain_get(grid_offset);
+    }
+    switch (terrain_type) {
+        case TERRAIN_GRASS:
+            terrain &= TERRAIN_PAINT_MASK;
+            break;
+        case TERRAIN_TREE:
+        case TERRAIN_ROCK:
+        case TERRAIN_SHRUB:
+        case TERRAIN_MEADOW:
+        case TERRAIN_RUBBLE:
+            if (!(terrain & terrain_type)) {
+                terrain &= TERRAIN_PAINT_MASK;
+                terrain |= terrain_type;
+            }
+            break;
+        case TERRAIN_WATER:
+            if (!(terrain & TERRAIN_WATER) && !(terrain & TERRAIN_ELEVATION_ROCK)) {
+                terrain &= TERRAIN_PAINT_MASK;
+                terrain |= TERRAIN_WATER;
+            }
+            break;
+        default:
+            break;
+    }
+    map_terrain_set(grid_offset, terrain);
+}
+
 void editor_tool_update_use(const map_tile *tile)
 {
     if (!data.build_in_progress) {

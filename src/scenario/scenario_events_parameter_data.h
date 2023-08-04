@@ -31,6 +31,7 @@ typedef enum {
     PARAMETER_TYPE_STORAGE_TYPE,
     PARAMETER_TYPE_ATTACK_TYPE,
     PARAMETER_TYPE_TARGET_TYPE,
+    PARAMETER_TYPE_TERRAIN,
 } parameter_type;
 
 typedef struct {

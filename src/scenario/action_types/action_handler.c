@@ -82,6 +82,8 @@ int scenario_action_type_execute(scenario_action_t *action)
             return scenario_action_type_show_custom_message_execute(action);
         case ACTION_TYPE_TAX_RATE_SET:
             return scenario_action_type_tax_rate_set_execute(action);
+        case ACTION_TYPE_TERRAIN_AREA_SET_TO:
+            return scenario_action_type_terrain_set_to_execute(action);
         default:
             return 0;
     }

@@ -339,6 +339,7 @@ static int xml_import_special_parse_attribute(xml_data_attribute_t *attr, int *t
         case PARAMETER_TYPE_STANDARD_MESSAGE:
         case PARAMETER_TYPE_STORAGE_TYPE:
         case PARAMETER_TYPE_TARGET_TYPE:
+        case PARAMETER_TYPE_TERRAIN:
             return xml_import_special_parse_type(attr, attr->type, target);
         case PARAMETER_TYPE_BUILDING_COUNTING:
             return xml_import_special_parse_building_counting(attr, target);

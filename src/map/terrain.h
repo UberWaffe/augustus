@@ -4,6 +4,7 @@
 #include "core/buffer.h"
 
 enum {
+    TERRAIN_GRASS = 0,
     TERRAIN_TREE = 1,
     TERRAIN_ROCK = 2,
     TERRAIN_WATER = 4,

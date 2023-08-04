@@ -7,6 +7,7 @@
 #include "empire/city.h"
 #include "figure/formation.h"
 #include "game/resource.h"
+#include "map/terrain.h"
 #include "scenario/custom_messages.h"
 #include "scenario/invasion.h"
 #include "scenario/scenario.h"
@@ -252,6 +253,11 @@ static scenario_action_data_t scenario_action_data[ACTION_TYPE_MAX] = {
                                         .xml_parm2 =    { .name = "size",                        .type = PARAMETER_TYPE_NUMBER,           .min_limit = 0,           .max_limit = 150,     .key = TR_PARAMETER_TYPE_INVASION_SIZE },
                                         .xml_parm3 =    { .name = "invasion_point",              .type = PARAMETER_TYPE_NUMBER,           .min_limit = 1,           .max_limit = 8,       .key = TR_PARAMETER_TYPE_INVASION_POINT },
                                         .xml_parm4 =    { .name = "target_type",                 .type = PARAMETER_TYPE_TARGET_TYPE,       .key = TR_PARAMETER_TYPE_TARGET_TYPE }, },
+    [ACTION_TYPE_TERRAIN_AREA_SET_TO]     = { .type = ACTION_TYPE_TERRAIN_AREA_SET_TO,
+                                        .xml_attr =     { .name = "terrain_area_set_to",    .type = PARAMETER_TYPE_TEXT,         .key = TR_ACTION_TYPE_TERRAIN_AREA_SET_TO },
+                                        .xml_parm1 =    { .name = "grid_offset",            .type = PARAMETER_TYPE_NUMBER,       .min_limit = 0,           .max_limit = UNLIMITED,     .key = TR_PARAMETER_GRID_OFFSET },
+                                        .xml_parm2 =    { .name = "block_radius",           .type = PARAMETER_TYPE_NUMBER,       .min_limit = 0,           .max_limit = UNLIMITED,     .key = TR_PARAMETER_RADIUS },
+                                        .xml_parm3 =    { .name = "terrain_type",           .type = PARAMETER_TYPE_TERRAIN,      .key = TR_PARAMETER_TYPE_TERRAIN }, },
 };
 
 scenario_action_data_t *scenario_events_parameter_data_get_actions_xml_attributes(action_types type)
@@ -699,6 +705,18 @@ static special_attribute_mapping_t special_attribute_mappings_target_type[] = {
 
 #define SPECIAL_ATTRIBUTE_MAPPINGS_TARGET_TYPE_SIZE (sizeof(special_attribute_mappings_target_type) / sizeof(special_attribute_mapping_t))
 
+static special_attribute_mapping_t special_attribute_mappings_terrain_type[] = {
+    { .type = PARAMETER_TYPE_TERRAIN,                .text = "grass",            .value = TERRAIN_GRASS,            .key = TR_PARAMETER_VALUE_TERRAIN_GRASS },
+    { .type = PARAMETER_TYPE_TERRAIN,                .text = "tree",             .value = TERRAIN_TREE,             .key = TR_PARAMETER_VALUE_TERRAIN_TREE },
+    { .type = PARAMETER_TYPE_TERRAIN,                .text = "rock",             .value = TERRAIN_ROCK,             .key = TR_PARAMETER_VALUE_TERRAIN_ROCK },
+    { .type = PARAMETER_TYPE_TERRAIN,                .text = "water",            .value = TERRAIN_WATER,            .key = TR_PARAMETER_VALUE_TERRAIN_WATER },
+    { .type = PARAMETER_TYPE_TERRAIN,                .text = "shrub",            .value = TERRAIN_SHRUB,            .key = TR_PARAMETER_VALUE_TERRAIN_SHRUB },
+    { .type = PARAMETER_TYPE_TERRAIN,                .text = "meadow",           .value = TERRAIN_MEADOW,           .key = TR_PARAMETER_VALUE_TERRAIN_MEADOW },
+    { .type = PARAMETER_TYPE_TERRAIN,                .text = "rubble",           .value = TERRAIN_RUBBLE,           .key = TR_PARAMETER_VALUE_TERRAIN_RUBBLE },
+};
+
+#define SPECIAL_ATTRIBUTE_MAPPINGS_TERRAIN_TYPE_SIZE (sizeof(special_attribute_mappings_terrain_type) / sizeof(special_attribute_mapping_t))
+
 special_attribute_mapping_t *scenario_events_parameter_data_get_attribute_mapping(parameter_type type, int index)
 {
     switch (type) {
@@ -727,6 +745,8 @@ special_attribute_mapping_t *scenario_events_parameter_data_get_attribute_mappin
             return &special_attribute_mappings_storage_type[index];
         case PARAMETER_TYPE_TARGET_TYPE:
             return &special_attribute_mappings_target_type[index];
+        case PARAMETER_TYPE_TERRAIN:
+            return &special_attribute_mappings_terrain_type[index];
         default:
             return 0;
     }
@@ -760,6 +780,8 @@ int scenario_events_parameter_data_get_mappings_size(parameter_type type)
             return SPECIAL_ATTRIBUTE_MAPPINGS_STORAGE_TYPE_SIZE;
         case PARAMETER_TYPE_TARGET_TYPE:
             return SPECIAL_ATTRIBUTE_MAPPINGS_TARGET_TYPE_SIZE;
+        case PARAMETER_TYPE_TERRAIN:
+            return SPECIAL_ATTRIBUTE_MAPPINGS_TERRAIN_TYPE_SIZE;
         default:
             return 0;
     }
@@ -829,6 +851,8 @@ int scenario_events_parameter_data_get_default_value_for_parameter(xml_data_attr
             return STORAGE_TYPE_ALL;
         case PARAMETER_TYPE_TARGET_TYPE:
             return FORMATION_ATTACK_BEST_BUILDINGS;
+        case PARAMETER_TYPE_TERRAIN:
+            return TERRAIN_GRASS;
         default:
             return 0;
     }
@@ -1180,6 +1204,15 @@ void scenario_events_parameter_data_get_display_string_for_action(scenario_actio
         case ACTION_TYPE_SHOW_CUSTOM_MESSAGE:
             {
                 result_text = translation_for_type_lookup_by_value(PARAMETER_TYPE_CUSTOM_MESSAGE, action->parameter1, result_text, &maxlength);
+                return;
+            }
+        case ACTION_TYPE_TERRAIN_AREA_SET_TO:
+            {
+                result_text = append_text(translation_for(TR_PARAMETER_GRID_OFFSET), result_text, &maxlength);
+                result_text = translation_for_number_value(action->parameter1, result_text, &maxlength);
+                result_text = append_text(translation_for(TR_PARAMETER_RADIUS), result_text, &maxlength);
+                result_text = translation_for_number_value(action->parameter2, result_text, &maxlength);
+                result_text = translation_for_type_lookup_by_value(PARAMETER_TYPE_TERRAIN, action->parameter3, result_text, &maxlength);
                 return;
             }
         default:
