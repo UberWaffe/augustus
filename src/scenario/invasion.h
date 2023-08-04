@@ -3,6 +3,14 @@
 
 #include "core/buffer.h"
 
+typedef enum {
+    ATTACK_TYPE_NONE = 0,
+    ATTACK_TYPE_BARBARIAN,
+    ATTACK_TYPE_CAESAR,
+    ATTACK_TYPE_NATIVES,
+    ATTACK_TYPE_MARS_NATIVES
+} attack_type_enum;
+
 void scenario_invasion_clear(void);
 void scenario_invasion_init(void);
 
@@ -20,6 +28,7 @@ int scenario_invasion_start_from_caesar(int size);
 
 void scenario_invasion_start_from_cheat(void);
 
+void scenario_invasion_start_from_action(int attack_type, int size, int invasion_point, int target_type);
 void scenario_invasion_start_from_console(int attack_type, int size, int invasion_point);
 
 void scenario_invasion_process(void);

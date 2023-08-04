@@ -5,8 +5,10 @@
 #include "core/lang.h"
 #include "core/string.h"
 #include "empire/city.h"
+#include "figure/formation.h"
 #include "game/resource.h"
 #include "scenario/custom_messages.h"
+#include "scenario/invasion.h"
 #include "scenario/scenario.h"
 
 #define UNLIMITED 1000000000
@@ -244,6 +246,12 @@ static scenario_action_data_t scenario_action_data[ACTION_TYPE_MAX] = {
                                         .xml_parm2 =    { .name = "block_radius",   .type = PARAMETER_TYPE_NUMBER,           .min_limit = 0,           .max_limit = UNLIMITED,     .key = TR_PARAMETER_RADIUS },
                                         .xml_parm3 =    { .name = "building",       .type = PARAMETER_TYPE_BUILDING,         .key = TR_PARAMETER_TYPE_BUILDING_COUNTING },
                                         .xml_parm4 =    { .name = "destroy_all",    .type = PARAMETER_TYPE_BOOLEAN,          .min_limit = 0,      .max_limit = 1,      .key = TR_PARAMETER_DESTROY_ALL }, },
+    [ACTION_TYPE_INVASION_IMMEDIATE]     = { .type = ACTION_TYPE_INVASION_IMMEDIATE,
+                                        .xml_attr =     { .name = "invasion_start_immediate",    .type = PARAMETER_TYPE_TEXT,             .key = TR_ACTION_TYPE_INVASION_IMMEDIATE },
+                                        .xml_parm1 =    { .name = "attack_type",                 .type = PARAMETER_TYPE_ATTACK_TYPE,      .key = TR_PARAMETER_TYPE_ATTACK_TYPE },
+                                        .xml_parm2 =    { .name = "size",                        .type = PARAMETER_TYPE_NUMBER,           .min_limit = 0,           .max_limit = 150,     .key = TR_PARAMETER_TYPE_INVASION_SIZE },
+                                        .xml_parm3 =    { .name = "invasion_point",              .type = PARAMETER_TYPE_NUMBER,           .min_limit = 1,           .max_limit = 8,       .key = TR_PARAMETER_TYPE_INVASION_POINT },
+                                        .xml_parm4 =    { .name = "target_type",                 .type = PARAMETER_TYPE_TARGET_TYPE,       .key = TR_PARAMETER_TYPE_TARGET_TYPE }, },
 };
 
 scenario_action_data_t *scenario_events_parameter_data_get_actions_xml_attributes(action_types type)
@@ -672,9 +680,30 @@ static special_attribute_mapping_t special_attribute_mappings_storage_type[] = {
 
 #define SPECIAL_ATTRIBUTE_MAPPINGS_STORAGE_TYPE_SIZE (sizeof(special_attribute_mappings_storage_type) / sizeof(special_attribute_mapping_t))
 
+static special_attribute_mapping_t special_attribute_mappings_attack_type[] = {
+    { .type = PARAMETER_TYPE_ATTACK_TYPE,                .text = "barbarian",           .value = ATTACK_TYPE_BARBARIAN,           .key = TR_PARAMETER_VALUE_ATTACK_TYPE_BARBARIAN },
+    { .type = PARAMETER_TYPE_ATTACK_TYPE,                .text = "caesar",              .value = ATTACK_TYPE_CAESAR,              .key = TR_PARAMETER_VALUE_ATTACK_TYPE_CAESAR },
+    { .type = PARAMETER_TYPE_ATTACK_TYPE,                .text = "natives",             .value = ATTACK_TYPE_NATIVES,             .key = TR_PARAMETER_VALUE_ATTACK_TYPE_NATIVES },
+    { .type = PARAMETER_TYPE_ATTACK_TYPE,                .text = "mars",                .value = ATTACK_TYPE_MARS_NATIVES,        .key = TR_PARAMETER_VALUE_ATTACK_TYPE_MARS_NATIVES },
+};
+
+#define SPECIAL_ATTRIBUTE_MAPPINGS_ATTACK_TYPE_SIZE (sizeof(special_attribute_mappings_attack_type) / sizeof(special_attribute_mapping_t))
+
+static special_attribute_mapping_t special_attribute_mappings_target_type[] = {
+    { .type = PARAMETER_TYPE_TARGET_TYPE,                .text = "food_chain",          .value = FORMATION_ATTACK_FOOD_CHAIN,      .key = TR_PARAMETER_VALUE_FORMATION_ATTACK_FOOD_CHAIN },
+    { .type = PARAMETER_TYPE_TARGET_TYPE,                .text = "gold_stores",         .value = FORMATION_ATTACK_GOLD_STORES,     .key = TR_PARAMETER_VALUE_FORMATION_ATTACK_GOLD_STORES },
+    { .type = PARAMETER_TYPE_TARGET_TYPE,                .text = "natives",             .value = FORMATION_ATTACK_BEST_BUILDINGS,  .key = TR_PARAMETER_VALUE_FORMATION_ATTACK_BEST_BUILDINGS },
+    { .type = PARAMETER_TYPE_TARGET_TYPE,                .text = "troops",              .value = FORMATION_ATTACK_TROOPS,          .key = TR_PARAMETER_VALUE_FORMATION_ATTACK_TROOPS },
+    { .type = PARAMETER_TYPE_TARGET_TYPE,                .text = "random",              .value = FORMATION_ATTACK_RANDOM,          .key = TR_PARAMETER_VALUE_FORMATION_ATTACK_RANDOM },
+};
+
+#define SPECIAL_ATTRIBUTE_MAPPINGS_TARGET_TYPE_SIZE (sizeof(special_attribute_mappings_target_type) / sizeof(special_attribute_mapping_t))
+
 special_attribute_mapping_t *scenario_events_parameter_data_get_attribute_mapping(parameter_type type, int index)
 {
     switch (type) {
+        case PARAMETER_TYPE_ATTACK_TYPE:
+            return &special_attribute_mappings_attack_type[index];
         case PARAMETER_TYPE_CHECK:
             return &special_attribute_mappings_check[index];
         case PARAMETER_TYPE_DIFFICULTY:
@@ -696,6 +725,8 @@ special_attribute_mapping_t *scenario_events_parameter_data_get_attribute_mappin
             return &special_attribute_mappings_rating_type[index];
         case PARAMETER_TYPE_STORAGE_TYPE:
             return &special_attribute_mappings_storage_type[index];
+        case PARAMETER_TYPE_TARGET_TYPE:
+            return &special_attribute_mappings_target_type[index];
         default:
             return 0;
     }
@@ -704,6 +735,8 @@ special_attribute_mapping_t *scenario_events_parameter_data_get_attribute_mappin
 int scenario_events_parameter_data_get_mappings_size(parameter_type type)
 {
     switch (type) {
+        case PARAMETER_TYPE_ATTACK_TYPE:
+            return SPECIAL_ATTRIBUTE_MAPPINGS_ATTACK_TYPE_SIZE;
         case PARAMETER_TYPE_CHECK:
             return SPECIAL_ATTRIBUTE_MAPPINGS_CHECK_SIZE;
         case PARAMETER_TYPE_DIFFICULTY:
@@ -725,6 +758,8 @@ int scenario_events_parameter_data_get_mappings_size(parameter_type type)
             return SPECIAL_ATTRIBUTE_MAPPINGS_RATING_TYPE_SIZE;
         case PARAMETER_TYPE_STORAGE_TYPE:
             return SPECIAL_ATTRIBUTE_MAPPINGS_STORAGE_TYPE_SIZE;
+        case PARAMETER_TYPE_TARGET_TYPE:
+            return SPECIAL_ATTRIBUTE_MAPPINGS_TARGET_TYPE_SIZE;
         default:
             return 0;
     }
@@ -770,6 +805,8 @@ int scenario_events_parameter_data_get_default_value_for_parameter(xml_data_attr
                 }
                 return 0;
             }
+        case PARAMETER_TYPE_ATTACK_TYPE:
+            return ATTACK_TYPE_BARBARIAN;
         case PARAMETER_TYPE_CHECK:
             return COMPARISON_TYPE_EQUAL;
         case PARAMETER_TYPE_DIFFICULTY:
@@ -790,6 +827,8 @@ int scenario_events_parameter_data_get_default_value_for_parameter(xml_data_attr
             return SELECTED_RATING_PEACE;
         case PARAMETER_TYPE_STORAGE_TYPE:
             return STORAGE_TYPE_ALL;
+        case PARAMETER_TYPE_TARGET_TYPE:
+            return FORMATION_ATTACK_BEST_BUILDINGS;
         default:
             return 0;
     }
@@ -1052,6 +1091,18 @@ void scenario_events_parameter_data_get_display_string_for_action(scenario_actio
             }
         case ACTION_TYPE_GLADIATOR_REVOLT:
             {
+                return;
+            }
+        case ACTION_TYPE_INVASION_IMMEDIATE:
+            {
+                result_text = translation_for_type_lookup_by_value(PARAMETER_TYPE_ATTACK_TYPE, action->parameter1, result_text, &maxlength);
+                result_text = append_text(string_from_ascii(" "), result_text, &maxlength);
+                result_text = append_text(translation_for(TR_PARAMETER_TYPE_INVASION_SIZE), result_text, &maxlength);
+                result_text = translation_for_number_value(action->parameter2, result_text, &maxlength);
+                result_text = append_text(string_from_ascii(" "), result_text, &maxlength);
+                result_text = append_text(translation_for(TR_PARAMETER_TYPE_INVASION_POINT), result_text, &maxlength);
+                result_text = translation_for_number_value(action->parameter3, result_text, &maxlength);
+                result_text = translation_for_type_lookup_by_value(PARAMETER_TYPE_TARGET_TYPE, action->parameter4, result_text, &maxlength);
                 return;
             }
         case ACTION_TYPE_REQUEST_IMMEDIATELY_START:

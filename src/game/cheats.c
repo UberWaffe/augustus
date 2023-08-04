@@ -171,7 +171,7 @@ static void game_cheat_start_invasion(uint8_t *args)
     int attack_type = 0;
     int size = 0;
     int invasion_point = 0;
-    int index = parse_integer(args, &attack_type); // 0 barbarians, 1 caesar, 2 mars natives
+    attack_type_enum index = parse_integer(args, &attack_type);
     index = parse_integer(args + index, &size);
     parse_integer(args + index, &invasion_point);
     scenario_invasion_start_from_console(attack_type, size, invasion_point);

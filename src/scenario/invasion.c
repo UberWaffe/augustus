@@ -69,12 +69,6 @@ static const struct {
     {100, 0, 0, {FIGURE_ENEMY_CAESAR_LEGIONARY, 0, 0}, FORMATION_COLUMN} // caesar
 };
 
-enum {
-    ATTACK_TYPE_BARBARIAN,
-    ATTACK_TYPE_CAESAR,
-    ATTACK_TYPE_NATIVES
-};
-
 typedef struct {
     int in_use;
     int handled;
@@ -100,7 +94,7 @@ void scenario_invasion_clear(void)
     memset(data.warnings, 0, MAX_INVASION_WARNINGS * sizeof(invasion_warning));
 }
 
-void scenario_invasion_init(void)
+static void init_warnings(void)
 {
     scenario_invasion_clear();
     int path_current = 1;
@@ -110,11 +104,9 @@ void scenario_invasion_init(void)
     }
     invasion_warning *warning = &data.warnings[1];
     for (int i = 0; i < MAX_INVASIONS; i++) {
-        random_generate_next();
         if (!scenario.invasions[i].type) {
             continue;
         }
-        scenario.invasions[i].month = 2 + (random_byte() & 7);
         if (scenario.invasions[i].type == INVASION_TYPE_LOCAL_UPRISING ||
             scenario.invasions[i].type == INVASION_TYPE_DISTANT_BATTLE) {
             continue;
@@ -144,6 +136,18 @@ void scenario_invasion_init(void)
             path_current = 1;
         }
     }
+}
+
+void scenario_invasion_init(void)
+{
+    for (int i = 0; i < MAX_INVASIONS; i++) {
+        random_generate_next();
+        if (!scenario.invasions[i].type) {
+            continue;
+        }
+        scenario.invasions[i].month = 2 + (random_byte() & 7);
+    }
+    init_warnings();
 }
 
 int scenario_invasion_exists_upcoming(void)
@@ -207,7 +211,7 @@ static void determine_formations(int num_soldiers, int *num_formations, int sold
     }
 }
 
-static int start_invasion(int enemy_type, int amount, int invasion_point, int attack_type, int invasion_id)
+static int start_invasion(int enemy_type, int amount, int invasion_point, int attack_type, formation_attack_enum invasion_id)
 {
     if (amount <= 0) {
         return -1;
@@ -454,14 +458,16 @@ void scenario_invasion_start_from_cheat(void)
     }
 }
 
-void scenario_invasion_start_from_console(int attack_type, int size, int invasion_point)
+void scenario_invasion_start_from_action(int attack_type, int size, int invasion_point, int target_type)
 {
+    if (target_type < FORMATION_ATTACK_FOOD_CHAIN || target_type > FORMATION_ATTACK_RANDOM) {
+        target_type = FORMATION_ATTACK_RANDOM;
+    }
     switch (attack_type) {
-
         case ATTACK_TYPE_BARBARIAN:
             {
                 int enemy_id = scenario.enemy_id;
-                int grid_offset = start_invasion(ENEMY_ID_TO_ENEMY_TYPE[enemy_id], size, invasion_point, FORMATION_ATTACK_RANDOM, 23);
+                int grid_offset = start_invasion(ENEMY_ID_TO_ENEMY_TYPE[enemy_id], size, invasion_point, target_type, 23);
                 if (grid_offset) {
                     if (ENEMY_ID_TO_ENEMY_TYPE[enemy_id] > 4) {
                         city_message_post(1, MESSAGE_ENEMY_ARMY_ATTACK, data.last_internal_invasion_id, grid_offset);
@@ -478,7 +484,15 @@ void scenario_invasion_start_from_console(int attack_type, int size, int invasio
             }
         case ATTACK_TYPE_NATIVES:
             {
-                int grid_offset = start_invasion(ENEMY_0_BARBARIAN, size, 8, FORMATION_ATTACK_FOOD_CHAIN, 23);
+                int grid_offset = start_invasion(ENEMY_0_BARBARIAN, size, 8, target_type, 23);
+                if (grid_offset) {
+                    city_message_post(1, MESSAGE_LOCAL_UPRISING, data.last_internal_invasion_id, grid_offset);
+                }
+                break;
+            }
+        case ATTACK_TYPE_MARS_NATIVES:
+            {
+                int grid_offset = start_invasion(ENEMY_0_BARBARIAN, size, 8, target_type, 23);
                 if (grid_offset) {
                     city_message_post(1, MESSAGE_LOCAL_UPRISING_MARS, data.last_internal_invasion_id, grid_offset);
                 }
@@ -487,6 +501,26 @@ void scenario_invasion_start_from_console(int attack_type, int size, int invasio
         default:
             break;
     }
+}
+
+void scenario_invasion_start_from_console(int attack_type, int size, int invasion_point)
+{
+    int target_type = FORMATION_ATTACK_RANDOM;
+    switch (attack_type) {
+        case ATTACK_TYPE_BARBARIAN:
+            target_type = FORMATION_ATTACK_RANDOM;
+            break;
+        case ATTACK_TYPE_CAESAR:
+            target_type = FORMATION_ATTACK_BEST_BUILDINGS;
+            break;
+        case ATTACK_TYPE_NATIVES:
+        case ATTACK_TYPE_MARS_NATIVES:
+            target_type = FORMATION_ATTACK_FOOD_CHAIN;
+            break;
+        default:
+            break;
+    }
+    scenario_invasion_start_from_action(attack_type, size, invasion_point, target_type);
 }
 
 void scenario_invasion_save_state(buffer *invasion_id, buffer *warnings)
