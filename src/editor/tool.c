@@ -263,6 +263,8 @@ void editor_tool_set_terrain(int grid_offset, int terrain_type)
             break;
     }
     map_terrain_set(grid_offset, terrain);
+
+    widget_minimap_invalidate();
 }
 
 void editor_tool_update_use(const map_tile *tile)
