@@ -48,7 +48,12 @@ void scenario_event_save_state(buffer *buf, scenario_event_t *event)
 void scenario_event_load_state(buffer *buf, scenario_event_t *event)
 {
     int saved_id = buffer_read_i32(buf);
+    
     event->state = buffer_read_i16(buf);
+    if (event->state == EVENT_STATE_DELETED) {
+        event->state = EVENT_STATE_UNDEFINED;
+    }
+
     event->repeat_months_min = buffer_read_i32(buf);
     event->repeat_months_max = buffer_read_i32(buf);
     event->months_until_active = buffer_read_i32(buf);

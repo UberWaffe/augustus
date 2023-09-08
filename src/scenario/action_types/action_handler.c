@@ -1,7 +1,12 @@
 #include "action_handler.h"
 
+#include "core/log.h"
 #include "game/resource.h"
 #include "scenario/action_types/action_types.h"
+#include "scenario/event_chain_step.h"
+#include "scenario/options.h"
+#include "scenario/scenario_event.h"
+#include "scenario/scenario_events_controller.h"
 
 void scenario_action_type_init(scenario_action_t *action)
 {
@@ -93,7 +98,7 @@ void scenario_action_type_delete(scenario_action_t *action)
     action->type = ACTION_TYPE_UNDEFINED;
 }
 
-void scenario_action_type_save_state(buffer *buf, const scenario_action_t *action, int link_type, int32_t link_id)
+static void save_state(buffer *buf, const scenario_action_t *action, int link_type, int32_t link_id)
 {
     buffer_write_i16(buf, link_type);
     buffer_write_i32(buf, link_id);
@@ -105,7 +110,66 @@ void scenario_action_type_save_state(buffer *buf, const scenario_action_t *actio
     buffer_write_i32(buf, action->parameter5);
 }
 
-void scenario_action_type_load_state(buffer *buf, scenario_action_t *action, int *link_type, int32_t *link_id)
+void scenario_actions_save_state(buffer *buf)
+{
+    int32_t array_size = scenario_events_get_total_actions_count()
+        + scenario_options_get_total_actions_count();
+
+    int32_t struct_size = (2 * sizeof(int16_t)) + (6 * sizeof(int32_t));
+    buffer_init_dynamic_piece(buf,
+        SCENARIO_ACTIONS_VERSION,
+        array_size,
+        struct_size);
+
+    int event_count = scenario_events_get_count();
+    for (int i = 0; i < event_count; i++) {
+        scenario_event_t *current_event = scenario_event_get(i);
+
+        for (int j = 0; j < current_event->actions.size; j++) {
+            scenario_action_t *current_action = array_item(current_event->actions, j);
+            save_state(buf, current_action, LINK_TYPE_SCENARIO_EVENT, current_event->id);
+        }
+    }
+
+    int options_count = scenario_options_get_count();
+    for (int i = 0; i < options_count; i++) {
+        scenario_option_t *current_option = scenario_options_get(i);
+
+        for (int j = 0; j < current_option->actions.size; j++) {
+            scenario_action_t *current_action = array_item(current_option->actions, j);
+            save_state(buf, current_action, LINK_TYPE_SCENARIO_OPTION, current_option->id);
+        }
+    }
+}
+
+static void load_link_action(scenario_action_t *action, int link_type, int32_t link_id)
+{
+    switch (link_type) {
+        case LINK_TYPE_SCENARIO_EVENT:
+            {
+                scenario_event_t *event = scenario_event_get(link_id);
+                scenario_event_link_action(event, action);
+            }
+            break;
+        case LINK_TYPE_SCENARIO_OPTION:
+            {
+                scenario_option_t *option = scenario_options_get(link_id);
+                scenario_options_link_action(option, action);
+            }
+            break;
+        case LINK_TYPE_SCENARIO_EVENT_CHAIN_STEP:
+            {
+                scenario_event_chain_step_t *chain_step = scenario_event_chain_steps_get(link_id);
+                scenario_event_chain_steps_link_action(chain_step, action);
+            }
+            break;
+        default:
+            log_error("Unhandled action link type. The game will probably crash.", 0, 0);
+            break;
+    }
+}
+
+static void load_state(buffer *buf, scenario_action_t *action, int *link_type, int32_t *link_id)
 {
     *link_type = buffer_read_i16(buf);
     *link_id = buffer_read_i32(buf);
@@ -130,5 +194,23 @@ void scenario_action_type_load_state(buffer *buf, scenario_action_t *action, int
         action->parameter1 = resource_remap(action->parameter1);        
     } else if (action->type == ACTION_TYPE_TRADE_SET_SELL_PRICE_ONLY) {
         action->parameter1 = resource_remap(action->parameter1);        
+    }
+}
+
+void scenario_actions_load_state(buffer *buf)
+{
+    int buffer_size, version, array_size, struct_size;
+    buffer_load_dynamic_piece_header_data(buf,
+        &buffer_size,
+        &version,
+        &array_size,
+        &struct_size);
+
+    int link_type = 0;
+    int32_t link_id = 0;
+    for (int i = 0; i < array_size; i++) {
+        scenario_action_t action;
+        load_state(buf, &action, &link_type, &link_id);
+        load_link_action(&action, link_type, link_id);
     }
 }

@@ -2,8 +2,6 @@
 
 #include "core/log.h"
 #include "game/save_version.h"
-#include "scenario/action_types/action_handler.h"
-#include "scenario/condition_types/condition_handler.h"
 #include "scenario/scenario.h"
 #include "scenario/scenario_event.h"
 
@@ -85,6 +83,26 @@ int scenario_events_get_count(void)
     return scenario_events.size;
 }
 
+int scenario_events_get_total_conditions_count(void)
+{
+    int32_t total_count = 0;
+    scenario_event_t *current_event;
+    array_foreach(scenario_events, current_event) {
+        total_count += current_event->conditions.size;
+    }
+    return total_count;
+}
+
+int scenario_events_get_total_actions_count(void)
+{
+    int32_t total_count = 0;
+    scenario_event_t *current_event;
+    array_foreach(scenario_events, current_event) {
+        total_count += current_event->actions.size;
+    }
+    return total_count;
+}
+
 static void info_save_state(buffer *buf)
 {
     int32_t array_size = scenario_events.size;
@@ -100,76 +118,9 @@ static void info_save_state(buffer *buf)
     }
 }
 
-static void conditions_save_state(buffer *buf)
-{
-    int32_t array_size = 0;
-    scenario_event_t *current_event;
-    array_foreach(scenario_events, current_event) {
-        array_size += current_event->conditions.size;
-    }
-    // If in future conditions can be linked to more things, then also take them into account here.
-
-    int32_t struct_size = (2 * sizeof(int16_t)) + (6 * sizeof(int32_t));
-    buffer_init_dynamic_piece(buf,
-        SCENARIO_EVENTS_VERSION,
-        array_size,
-        struct_size);
-
-    for (int i = 0; i < scenario_events.size; i++) {
-        current_event = array_item(scenario_events, i);
-
-        for (int j = 0; j < current_event->conditions.size; j++) {
-            scenario_condition_t *current_condition = array_item(current_event->conditions, j);
-            scenario_condition_type_save_state(buf, current_condition, LINK_TYPE_SCENARIO_EVENT, current_event->id);
-        }
-    }
-}
-
-static void actions_save_state(buffer *buf)
-{
-    int32_t array_size = 0;
-    scenario_event_t *current_event;
-    array_foreach(scenario_events, current_event) {
-        array_size += current_event->actions.size;
-    }
-    // If in future actions can be linked to more things, then also take them into account here.
-
-    int32_t struct_size = (2 * sizeof(int16_t)) + (6 * sizeof(int32_t));
-    buffer_init_dynamic_piece(buf,
-        SCENARIO_EVENTS_VERSION,
-        array_size,
-        struct_size);
-
-    for (int i = 0; i < scenario_events.size; i++) {
-        current_event = array_item(scenario_events, i);
-
-        for (int j = 0; j < current_event->actions.size; j++) {
-            scenario_action_t *current_action = array_item(current_event->actions, j);
-            scenario_action_type_save_state(buf, current_action, LINK_TYPE_SCENARIO_EVENT, current_event->id);
-        }
-    }
-}
-
-void scenario_events_save_state(buffer *buf_events, buffer *buf_conditions, buffer *buf_actions)
+void scenario_events_save_state(buffer *buf_events)
 {
     info_save_state(buf_events);
-    conditions_save_state(buf_conditions);
-    actions_save_state(buf_actions);
-}
-
-static void load_link_condition(scenario_condition_t *condition, int link_type, int32_t link_id)
-{
-    switch (link_type) {
-        case LINK_TYPE_SCENARIO_EVENT:
-            {
-                scenario_event_t *event = scenario_event_get(link_id);
-                scenario_event_link_condition(event, condition);
-            }
-            break;
-        default:
-            log_error("Unhandled condition link type. The game will probably crash.", 0, 0);
-            break;
-    }
 }
 
 static void info_load_state(buffer *buf)
@@ -187,70 +138,10 @@ static void info_load_state(buffer *buf)
     }
 }
 
-static void conditions_load_state(buffer *buf)
-{
-    int buffer_size, version, array_size, struct_size;
-    buffer_load_dynamic_piece_header_data(buf,
-        &buffer_size,
-        &version,
-        &array_size,
-        &struct_size);
-
-    int link_type = 0;
-    int32_t link_id = 0;
-    for (int i = 0; i < array_size; i++) {
-        scenario_condition_t condition;
-        scenario_condition_type_load_state(buf, &condition, &link_type, &link_id);
-        load_link_condition(&condition, link_type, link_id);
-    }
-}
-
-static void load_link_action(scenario_action_t *action, int link_type, int32_t link_id)
-{
-    switch (link_type) {
-        case LINK_TYPE_SCENARIO_EVENT:
-            {
-                scenario_event_t *event = scenario_event_get(link_id);
-                scenario_event_link_action(event, action);
-            }
-            break;
-        default:
-            log_error("Unhandled action link type. The game will probably crash.", 0, 0);
-            break;
-    }
-}
-
-static void actions_load_state(buffer *buf)
-{
-    int buffer_size, version, array_size, struct_size;
-    buffer_load_dynamic_piece_header_data(buf,
-        &buffer_size,
-        &version,
-        &array_size,
-        &struct_size);
-
-    int link_type = 0;
-    int32_t link_id = 0;
-    for (int i = 0; i < array_size; i++) {
-        scenario_action_t action;
-        scenario_action_type_load_state(buf, &action, &link_type, &link_id);
-        load_link_action(&action, link_type, link_id);
-    }
-}
-
-void scenario_events_load_state(buffer *buf_events, buffer *buf_conditions, buffer *buf_actions)
+void scenario_events_load_state(buffer *buf_events)
 {
     scenario_events_clear();
     info_load_state(buf_events);
-    conditions_load_state(buf_conditions);
-    actions_load_state(buf_actions);
-
-    scenario_event_t *current;
-    array_foreach(scenario_events, current) {
-        if (current->state == EVENT_STATE_DELETED) {
-            current->state = EVENT_STATE_UNDEFINED;
-        }
-    }
 }
 
 void scenario_events_process_all(void)

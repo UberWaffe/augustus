@@ -498,10 +498,13 @@ set(SCENARIO_FILES
     ${PROJECT_SOURCE_DIR}/src/scenario/editor_map.c
     ${PROJECT_SOURCE_DIR}/src/scenario/emperor_change.c
     ${PROJECT_SOURCE_DIR}/src/scenario/empire.c
+    ${PROJECT_SOURCE_DIR}/src/scenario/event_chains.c
+    ${PROJECT_SOURCE_DIR}/src/scenario/event_chain_step.c
     ${PROJECT_SOURCE_DIR}/src/scenario/gladiator_revolt.c
     ${PROJECT_SOURCE_DIR}/src/scenario/invasion.c
     ${PROJECT_SOURCE_DIR}/src/scenario/map.c
     ${PROJECT_SOURCE_DIR}/src/scenario/message_media_text_blob.c
+    ${PROJECT_SOURCE_DIR}/src/scenario/options.c
     ${PROJECT_SOURCE_DIR}/src/scenario/price_change.c
     ${PROJECT_SOURCE_DIR}/src/scenario/property.c
     ${PROJECT_SOURCE_DIR}/src/scenario/random_event.c

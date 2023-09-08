@@ -46,7 +46,9 @@
 #include "map/sprite.h"
 #include "map/terrain.h"
 #include "map/tiles.h"
+#include "scenario/action_types/action_handler.h"
 #include "scenario/criteria.h"
+#include "scenario/condition_types/condition_handler.h"
 #include "scenario/custom_media.h"
 #include "scenario/custom_messages.h"
 #include "scenario/earthquake.h"
@@ -634,7 +636,9 @@ static void scenario_load_from_state(scenario_state *file, scenario_version_t ve
     }
     scenario_load_state(file->scenario, file->scenario_requests, version);
     if (version > SCENARIO_LAST_NO_EVENTS) {
-        scenario_events_load_state(file->scenario_events, file->scenario_conditions, file->scenario_actions);
+        scenario_events_load_state(file->scenario_events);
+        scenario_conditions_load_state(file->scenario_conditions);
+        scenario_actions_load_state(file->scenario_actions);
     } else {
         scenario_events_clear();
     }
@@ -658,7 +662,9 @@ static void scenario_save_to_state(scenario_state *file)
     random_save_state(file->random_iv);
     scenario_save_state(file->scenario);
     scenario_requests_save_state(file->scenario_requests);
-    scenario_events_save_state(file->scenario_events, file->scenario_conditions, file->scenario_actions);
+    scenario_events_save_state(file->scenario_events);
+    scenario_conditions_save_state(file->scenario_conditions);
+    scenario_actions_save_state(file->scenario_actions);
     custom_messages_save_state(file->custom_messages);
     custom_media_save_state(file->custom_media);
     message_media_text_blob_save_state(file->message_media_text_blob, file->message_media_metadata);
@@ -696,7 +702,9 @@ static void savegame_load_from_state(savegame_state *state, savegame_version_t v
     }
     scenario_load_state(state->scenario, state->scenario_requests, scenario_version);
     if (scenario_version > SCENARIO_LAST_NO_EVENTS) {
-        scenario_events_load_state(state->scenario_events, state->scenario_conditions, state->scenario_actions);
+        scenario_events_load_state(state->scenario_events);
+        scenario_conditions_load_state(state->scenario_conditions);
+        scenario_actions_load_state(state->scenario_actions);
     } else {
         scenario_events_clear();
     }
@@ -829,7 +837,9 @@ static void savegame_save_to_state(savegame_state *state)
 
     scenario_save_state(state->scenario);
     scenario_requests_save_state(state->scenario_requests);
-    scenario_events_save_state(state->scenario_events, state->scenario_conditions, state->scenario_actions);
+    scenario_events_save_state(state->scenario_events);
+    scenario_conditions_save_state(state->scenario_conditions);
+    scenario_actions_save_state(state->scenario_actions);
     custom_messages_save_state(state->custom_messages);
     custom_media_save_state(state->custom_media);
     message_media_text_blob_save_state(state->message_media_text_blob, state->message_media_metadata);

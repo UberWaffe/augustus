@@ -2,12 +2,15 @@
 #define SCENARIO_EVENT_DATA_H
 
 #include "core/array.h"
+#include "scenario/custom_messages.h"
 
 #include <stdint.h>
 
 #define SCENARIO_EVENTS_ARRAY_SIZE_STEP 100
 #define SCENARIO_ACTIONS_ARRAY_SIZE_STEP 20
 #define SCENARIO_CONDITIONS_ARRAY_SIZE_STEP 20
+
+#define CHAIN_STEP_MAX_OPTIONS 10
 
 typedef enum {
     EVENT_STATE_UNDEFINED = 0,
@@ -16,6 +19,13 @@ typedef enum {
     EVENT_STATE_PAUSED = 3,
     EVENT_STATE_DELETED = 4
 } event_state;
+
+typedef enum {
+    EVENT_CHAIN_STATE_UNDEFINED = 0,
+    EVENT_CHAIN_STATE_ACTIVE = 1,
+    EVENT_CHAIN_STATE_DISABLED = 2,
+    EVENT_CHAIN_STATE_DELETED = 3
+} event_chain_state;
 
 typedef enum {
     CONDITION_TYPE_UNDEFINED = 0,
@@ -85,7 +95,12 @@ typedef enum {
 
 typedef enum {
     LINK_TYPE_UNDEFINED = -1,
-    LINK_TYPE_SCENARIO_EVENT = 0
+    LINK_TYPE_SCENARIO_EVENT = 0,
+    LINK_TYPE_SCENARIO_OPTION = 1,
+    LINK_TYPE_SCENARIO_OPTION_VISIBLE_CONDITIONS = 2,
+    LINK_TYPE_SCENARIO_OPTION_ENABLED_CONDITIONS = 3,
+    LINK_TYPE_SCENARIO_EVENT_CHAIN_STEP = 4,
+    LINK_TYPE_SCENARIO_EVENT_CHAIN = 5
 } link_type_t;
 
 enum {
@@ -135,5 +150,35 @@ typedef struct {
     array(scenario_condition_t) conditions;
     array(scenario_action_t) actions;
 } scenario_event_t;
+
+typedef struct {
+    int id;
+    int in_use;
+    const text_blob_string_t *label;
+    const text_blob_string_t *tooltip_enabled;
+    const text_blob_string_t *tooltip_disabled;
+    array(scenario_condition_t) visible_conditions;
+    array(scenario_condition_t) enabled_conditions;
+    array(scenario_action_t) actions;
+    int linked_id;
+} scenario_option_t;
+
+typedef struct {
+    int id;
+    event_chain_state state;
+    int event_chain_id;
+    int execution_count;
+    const text_blob_string_t *linked_uid;
+    const custom_message_t *message;
+    array(scenario_action_t) actions;
+    scenario_option_t* options[CHAIN_STEP_MAX_OPTIONS];
+} scenario_event_chain_step_t;
+
+typedef struct {
+    int id;
+    event_chain_state state;
+    const text_blob_string_t *linked_uid;
+    const scenario_event_chain_step_t* initial_step;
+} scenario_event_chain_t;
 
 #endif // SCENARIO_EVENT_DATA_H
