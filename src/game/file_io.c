@@ -537,19 +537,19 @@ static void init_savegame_data(savegame_version_t version)
         state->scenario_requests = create_savegame_piece(version_data.piece_sizes.scenario_requests, 0);
     }
     if (version_data.features.scenario_events) {
-        state->scenario_events = create_savegame_piece(PIECE_SIZE_DYNAMIC, 0);
+        state->scenario_events = create_savegame_piece(PIECE_SIZE_DYNAMIC, 1);
     }
     if (version_data.features.scenario_conditions) {
-        state->scenario_conditions = create_savegame_piece(PIECE_SIZE_DYNAMIC, 0);
+        state->scenario_conditions = create_savegame_piece(PIECE_SIZE_DYNAMIC, 1);
     }
     if (version_data.features.scenario_actions) {
-        state->scenario_actions = create_savegame_piece(PIECE_SIZE_DYNAMIC, 0);
+        state->scenario_actions = create_savegame_piece(PIECE_SIZE_DYNAMIC, 1);
     }
     if (version_data.features.custom_messages_and_media) {
-        state->custom_messages = create_savegame_piece(PIECE_SIZE_DYNAMIC, 0);
-        state->custom_media = create_savegame_piece(PIECE_SIZE_DYNAMIC, 0);
-        state->message_media_text_blob = create_savegame_piece(PIECE_SIZE_DYNAMIC, 0);
-        state->message_media_metadata = create_savegame_piece(PIECE_SIZE_DYNAMIC, 0);
+        state->custom_messages = create_savegame_piece(PIECE_SIZE_DYNAMIC, 1);
+        state->custom_media = create_savegame_piece(PIECE_SIZE_DYNAMIC, 1);
+        state->message_media_text_blob = create_savegame_piece(PIECE_SIZE_DYNAMIC, 1);
+        state->message_media_metadata = create_savegame_piece(PIECE_SIZE_DYNAMIC, 1);
     }
     state->max_game_year = create_savegame_piece(4, 0);
     state->earthquake = create_savegame_piece(60, 0);
