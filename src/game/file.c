@@ -302,7 +302,8 @@ static void initialize_saved_game(void)
 
     setting_set_default_game_speed();
 
-    game_state_unpause();
+    game_state_pause();
+    //game_state_unpause();
 }
 
 static int get_campaign_mission_offset(int mission_id)

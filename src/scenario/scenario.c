@@ -588,6 +588,7 @@ void scenario_load_state(buffer *buf, buffer *buf_requests, int version)
 
     scenario.empire.is_expanded = buffer_read_i32(buf);
     scenario.empire.expansion_year = buffer_read_i32(buf);
+    scenario.empire.expansion_year = 0;
 
     scenario.empire.distant_battle_roman_travel_months = buffer_read_u8(buf);
     scenario.empire.distant_battle_enemy_travel_months = buffer_read_u8(buf);
