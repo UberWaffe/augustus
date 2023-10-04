@@ -140,6 +140,16 @@ void scenario_actions_save_state(buffer *buf)
             save_state(buf, current_action, LINK_TYPE_SCENARIO_OPTION, current_option->id);
         }
     }
+
+    int chain_steps_count = scenario_event_chain_steps_get_count();
+    for (int i = 0; i < chain_steps_count; i++) {
+        scenario_event_chain_step_t *current_chain_step = scenario_event_chain_steps_get(i);
+
+        for (int j = 0; j < current_chain_step->actions.size; j++) {
+            scenario_action_t *current_action = array_item(current_chain_step->actions, j);
+            save_state(buf, current_action, LINK_TYPE_SCENARIO_EVENT_CHAIN_STEP, current_option->id);
+        }
+    }
 }
 
 static void load_link_action(scenario_action_t *action, int link_type, int32_t link_id)
