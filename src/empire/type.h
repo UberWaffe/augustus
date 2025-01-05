@@ -22,6 +22,7 @@ typedef enum {
     EMPIRE_CITY_DISTANT_FOREIGN = 4,
     EMPIRE_CITY_VULNERABLE_ROMAN = 5,
     EMPIRE_CITY_FUTURE_ROMAN = 6,
+    EMPIRE_CITY_ROME = 7,
 } empire_city_type;
 
 #endif // EMPIRE_TYPE_H
