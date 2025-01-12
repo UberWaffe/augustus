@@ -380,7 +380,10 @@ static int xml_start_city(void)
     city_obj->obj.y = xml_parser_get_attribute_int("y") - city_obj->obj.height / 2;
     empire_transform_coordinates(&city_obj->obj.x, &city_obj->obj.y);
 
-    if (city_obj->city_type == EMPIRE_CITY_TRADE || city_obj->city_type == EMPIRE_CITY_FUTURE_TRADE) {
+    if (city_obj->city_type == EMPIRE_CITY_TRADE ||
+        city_obj->city_type == EMPIRE_CITY_FUTURE_TRADE ||
+        city_obj->city_type == EMPIRE_CITY_SEA_TRADE_DISTANT ||
+        city_obj->city_type == EMPIRE_CITY_LAND_TRADE_DISTANT) {
         full_empire_object *route_obj = empire_object_get_new();
         if (!route_obj) {
             data.success = 0;
@@ -390,14 +393,22 @@ static int xml_start_city(void)
         route_obj->in_use = 1;
         route_obj->obj.type = EMPIRE_OBJECT_LAND_TRADE_ROUTE;
 
-        route_obj->obj.type = xml_parser_get_attribute_enum("trade_route_type",
-            trade_route_types, 2, EMPIRE_OBJECT_LAND_TRADE_ROUTE);
-        if (route_obj->obj.type < EMPIRE_OBJECT_LAND_TRADE_ROUTE) {
-            route_obj->obj.type = EMPIRE_OBJECT_LAND_TRADE_ROUTE;
-        }
-        if (route_obj->obj.type == EMPIRE_OBJECT_SEA_TRADE_ROUTE) {
+        if (city_obj->city_type == EMPIRE_CITY_TRADE || city_obj->city_type == EMPIRE_CITY_FUTURE_TRADE) {
+            route_obj->obj.type = xml_parser_get_attribute_enum("trade_route_type",
+                trade_route_types, 2, EMPIRE_OBJECT_LAND_TRADE_ROUTE);
+            if (route_obj->obj.type < EMPIRE_OBJECT_LAND_TRADE_ROUTE) {
+                route_obj->obj.type = EMPIRE_OBJECT_LAND_TRADE_ROUTE;
+            }
+            if (route_obj->obj.type == EMPIRE_OBJECT_SEA_TRADE_ROUTE) {
+                route_obj->obj.image_id = image_group(GROUP_EMPIRE_TRADE_ROUTE_TYPE);
+            } else {
+                route_obj->obj.image_id = image_group(GROUP_EMPIRE_TRADE_ROUTE_TYPE) + 1;
+            }
+        } else if (city_obj->city_type == EMPIRE_CITY_SEA_TRADE_DISTANT) {
+            route_obj->obj.type = EMPIRE_OBJECT_SEA_TRADE_ROUTE;
             route_obj->obj.image_id = image_group(GROUP_EMPIRE_TRADE_ROUTE_TYPE);
-        } else {
+        } else if (city_obj->city_type == EMPIRE_CITY_LAND_TRADE_DISTANT) {
+            route_obj->obj.type = EMPIRE_OBJECT_LAND_TRADE_ROUTE;
             route_obj->obj.image_id = image_group(GROUP_EMPIRE_TRADE_ROUTE_TYPE) + 1;
         }
 

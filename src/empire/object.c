@@ -303,7 +303,10 @@ void empire_object_init_cities(int empire_id)
         }
 
         if (empire_id == SCENARIO_CUSTOM_EMPIRE &&
-            (city->type == EMPIRE_CITY_TRADE || city->type == EMPIRE_CITY_FUTURE_TRADE)) {
+            (city->type == EMPIRE_CITY_TRADE ||
+                city->type == EMPIRE_CITY_FUTURE_TRADE ||
+                city->type == EMPIRE_CITY_SEA_TRADE_DISTANT ||
+                city->type == EMPIRE_CITY_LAND_TRADE_DISTANT)) {
             obj->obj.trade_route_id = trade_route_new();
             array_item(objects, obj->obj.id + 1)->obj.trade_route_id = obj->obj.trade_route_id;
             for (int j = obj->obj.id + 2; j < objects.size; j++) {

@@ -413,6 +413,8 @@ static void draw_city_info(const empire_city *city)
             }
             break;
         }
+        case EMPIRE_CITY_LAND_TRADE_DISTANT:
+        case EMPIRE_CITY_SEA_TRADE_DISTANT:
         case EMPIRE_CITY_TRADE: {
             width += lang_text_draw(47, 5, x_offset + 20 + width, y_offset, FONT_NORMAL_GREEN);
             int resource_x_offset = x_offset + 30 + width;
