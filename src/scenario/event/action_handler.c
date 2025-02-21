@@ -92,6 +92,8 @@ int scenario_action_type_execute(scenario_action_t *action)
             return scenario_action_type_major_curse_execute(action);
         case ACTION_TYPE_CHANGE_CLIMATE:
             return scenario_action_type_change_climate_execute(action);
+        case ACTION_TYPE_CHANGE_SENTIMENT:
+            return scenario_action_type_change_sentiment_execute(action);
         default:
             return 0;
     }

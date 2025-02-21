@@ -12,8 +12,9 @@
 #include "city/labor.h"
 #include "city/message.h"
 #include "city/ratings.h"
-#include "core/random.h"
+#include "city/sentiment.h"
 #include "city/trade.h"
+#include "core/random.h"
 #include "empire/city.h"
 #include "empire/object.h"
 #include "empire/trade_prices.h"
@@ -650,6 +651,19 @@ int scenario_action_type_change_climate_execute(scenario_action_t *action)
     int climate = action->parameter1;
 
     scenario_change_climate(climate);
+
+    return 1;
+}
+
+int scenario_action_type_change_sentiment_execute(scenario_action_t *action)
+{
+    int value = action->parameter1;
+    int is_hard_set = action->parameter2;
+    if (is_hard_set) {
+        city_sentiment_set_happiness(value);
+    } else {
+        city_sentiment_change_happiness(value);
+    }
 
     return 1;
 }

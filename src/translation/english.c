@@ -1220,6 +1220,7 @@ static translation_string all_strings[] = {
     {TR_ACTION_TYPE_CAUSE_MINOR_CURSE, "Cause a minor curse" },
     {TR_ACTION_TYPE_CAUSE_MAJOR_CURSE, "Cause a major curse" },
     {TR_ACTION_TYPE_CHANGE_CLIMATE, "Change climate" },
+    {TR_ACTION_TYPE_CHANGE_SENTIMENT, "Change sentiment" },
     {TR_PARAMETER_VALUE_COMPARISON_TYPE_EQUAL, "Equal"},
     {TR_PARAMETER_VALUE_COMPARISON_TYPE_EQUAL_OR_LESS, "Less than or equal"},
     {TR_PARAMETER_VALUE_COMPARISON_TYPE_EQUAL_OR_MORE, "Greater than or equal"},

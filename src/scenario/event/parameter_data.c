@@ -280,6 +280,10 @@ static scenario_action_data_t scenario_action_data[ACTION_TYPE_MAX] = {
     [ACTION_TYPE_CHANGE_CLIMATE]         = { .type = ACTION_TYPE_CHANGE_CLIMATE,
                                         .xml_attr = {.name = "change_climate",      .type = PARAMETER_TYPE_TEXT,      .key = TR_ACTION_TYPE_CHANGE_CLIMATE },
                                         .xml_parm1 = {.name = "climate",            .type = PARAMETER_TYPE_CLIMATE,   .key = TR_PARAMETER_TYPE_CLIMATE }, },
+    [ACTION_TYPE_CHANGE_SENTIMENT]       = { .type = ACTION_TYPE_CHANGE_SENTIMENT,
+                                        .xml_attr = { .name = "change_sentiment",   .type = PARAMETER_TYPE_TEXT,      .key = TR_ACTION_TYPE_CHANGE_SENTIMENT },
+                                        .xml_parm1 = { .name = "amount",            .type = PARAMETER_TYPE_NUMBER,    .min_limit = -100,  .max_limit = 100,   .key = TR_PARAMETER_TYPE_NUMBER },
+                                        .xml_parm2 = { .name = "set_to_value",      .type = PARAMETER_TYPE_BOOLEAN,   .min_limit = 0,     .max_limit = 1,     .key = TR_PARAMETER_SET_TO_VALUE }, },
 };
 
 scenario_action_data_t *scenario_events_parameter_data_get_actions_xml_attributes(action_types type)
@@ -1200,6 +1204,12 @@ void scenario_events_parameter_data_get_display_string_for_action(const scenario
         case ACTION_TYPE_CHANGE_CLIMATE:
             {
                 result_text = translation_for_type_lookup_by_value(PARAMETER_TYPE_CLIMATE, action->parameter1, result_text, &maxlength);
+                return;
+            }
+        case ACTION_TYPE_CHANGE_SENTIMENT:
+            {
+                result_text = translation_for_set_or_add_text(action->parameter2, result_text, &maxlength);
+                result_text = translation_for_min_max_values(action->parameter1, action->parameter2, result_text, &maxlength);
                 return;
             }
         default:

@@ -6,6 +6,7 @@ int city_sentiment(void);
 int city_sentiment_low_mood_cause(void);
 
 void city_sentiment_change_happiness(int amount);
+void city_sentiment_set_happiness(int value);
 
 void city_sentiment_set_max_happiness(int max);
 void city_sentiment_set_min_happiness(int min);

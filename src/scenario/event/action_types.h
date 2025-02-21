@@ -67,6 +67,7 @@ int scenario_action_type_minor_curse_execute(scenario_action_t *action);
 int scenario_action_type_major_curse_execute(scenario_action_t *action);
 
 int scenario_action_type_change_climate_execute(scenario_action_t *action);
+int scenario_action_type_change_sentiment_execute(scenario_action_t *action);
 
 
 #endif // ACTION_TYPES_H
