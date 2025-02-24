@@ -71,4 +71,10 @@ int scenario_victory_message(void);
 
 void scenario_change_climate(scenario_climate climate);
 
+int scenario_get_land_trade_units_multiplier(void);
+int scenario_get_sea_trade_units_multiplier(void);
+
+void scenario_set_land_trade_units_multiplier(int value);
+void scenario_set_sea_trade_units_multiplier(int value);
+
 #endif // SCENARIO_PROPERTY_H

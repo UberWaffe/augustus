@@ -63,4 +63,7 @@ void scenario_editor_set_custom_message_introduction(int id);
 int scenario_editor_get_custom_victory_message(void);
 void scenario_editor_set_custom_victory_message(int id);
 
+void scenario_editor_set_trade_cargo_multiplier_land(int amount);
+void scenario_editor_set_trade_cargo_multiplier_sea(int amount);
+
 #endif // SCENARIO_EDITOR_H

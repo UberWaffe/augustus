@@ -115,6 +115,9 @@ void scenario_editor_create(int map_size)
 
     scenario.random_events.max_wages = 45;
     scenario.random_events.min_wages = 5;
+
+    scenario.trade_modifiers.land_trade_units_multiplier = 100;
+    scenario.trade_modifiers.sea_trade_units_multiplier = 100;
 }
 
 void scenario_editor_set_native_images(int image_hut, int image_meeting, int image_crops)
@@ -376,6 +379,18 @@ void scenario_editor_set_survival_time(int years)
 {
     scenario.win_criteria.survival_time.years = years;
     scenario_criteria_init_max_year();
+    scenario_editor_set_as_unsaved();
+}
+
+void scenario_editor_set_trade_cargo_multiplier_land(int value)
+{
+    scenario_set_land_trade_units_multiplier(value);
+    scenario_editor_set_as_unsaved();
+}
+
+void scenario_editor_set_trade_cargo_multiplier_sea(int value)
+{
+    scenario_set_sea_trade_units_multiplier(value);
     scenario_editor_set_as_unsaved();
 }
 

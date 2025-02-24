@@ -1,6 +1,7 @@
 #include "scenario.h"
 
 #include "city/resource.h"
+#include "core/calc.h"
 #include "core/string.h"
 #include "empire/city.h"
 #include "empire/trade_route.h"
@@ -333,6 +334,8 @@ void scenario_save_state(buffer *buf)
     buffer_write_u8(buf, scenario.open_play_scenario_id);
 
     buffer_write_i32(buf, scenario.intro_custom_message_id);
+    buffer_write_i32(buf, scenario.trade_modifiers.land_trade_units_multiplier);
+    buffer_write_i32(buf, scenario.trade_modifiers.sea_trade_units_multiplier);
 
     buffer_write_raw(buf, scenario.empire.custom_name, sizeof(scenario.empire.custom_name));
     buffer_write_u8(buf, 0);
@@ -501,6 +504,13 @@ void scenario_load_state(buffer *buf, int version)
     scenario.intro_custom_message_id = 0;
     if (version > SCENARIO_LAST_NO_CUSTOM_MESSAGES) {
         scenario.intro_custom_message_id = buffer_read_i32(buf);
+    }
+
+    scenario.trade_modifiers.land_trade_units_multiplier = 100;
+    scenario.trade_modifiers.sea_trade_units_multiplier = 100;
+    if (version > SCENARIO_LAST_NO_TRADE_MODIFIERS) {
+        scenario.trade_modifiers.land_trade_units_multiplier = buffer_read_i32(buf);
+        scenario.trade_modifiers.sea_trade_units_multiplier = buffer_read_i32(buf);
     }
 
     if (version > SCENARIO_LAST_NO_CUSTOM_VARIABLES && version <= SCENARIO_LAST_STATIC_ORIGINAL_DATA) {

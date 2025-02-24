@@ -20,7 +20,7 @@
 #include <math.h>
 #include <stdio.h>
 
-#define XML_TOTAL_ELEMENTS 65
+#define XML_TOTAL_ELEMENTS 66
 #define ERROR_MESSAGE_LENGTH 200
 
 static struct {
@@ -126,6 +126,7 @@ static const xml_parser_element xml_elements[XML_TOTAL_ELEMENTS] = {
     { "cause_major_curse", xml_import_create_action, 0, "actions" },
     { "change_climate", xml_import_create_action, 0, "actions"},
     { "change_sentiment", xml_import_create_action, 0, "actions"},
+    { "change_trade_cargo_multiplier", xml_import_create_action, 0, "actions"},
     { "context_building_type", xml_import_create_condition, 0, "conditions|group" }
 };
 

@@ -667,3 +667,19 @@ int scenario_action_type_change_sentiment_execute(scenario_action_t *action)
 
     return 1;
 }
+
+int scenario_action_type_change_trade_multiplier_execute(scenario_action_t *action)
+{
+    int multiplier = action->parameter1;
+    int affects_land = action->parameter2;
+    int affects_sea = action->parameter2;
+
+    if (affects_land) {
+        scenario_set_land_trade_units_multiplier(multiplier);
+    }
+    if (affects_sea) {
+        scenario_set_sea_trade_units_multiplier(multiplier);
+    }
+
+    return 1;
+}

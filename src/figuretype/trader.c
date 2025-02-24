@@ -1,5 +1,7 @@
 #include "trader.h"
 
+#include <math.h>
+
 #include "building/building.h"
 #include "building/caravanserai.h"
 #include "building/dock.h"
@@ -37,6 +39,7 @@
 #include "map/routing_path.h"
 #include "scenario/map.h"
 #include "scenario/property.h"
+#include "scenario/scenario.h"
 
 #define INFINITE 10000
 #define TRADER_INITIAL_WAIT GAME_TIME_TICKS_PER_DAY
@@ -997,6 +1000,10 @@ int figure_trade_land_trade_units(void)
         }
         unit += add_unit;
     }
+
+    unit = (int)ceil(unit * scenario.trade_modifiers.land_trade_units_multiplier / 100.0);
+    unit = calc_bound(unit, 1, 250); // trader_amount_bought is an unsigned char
+
     return unit;
 }
 
@@ -1032,6 +1039,9 @@ int figure_trade_sea_trade_units(void)
         }
         unit += add_unit;
     }
+
+    unit = (int)ceil(unit * scenario.trade_modifiers.sea_trade_units_multiplier / 100.0);
+    unit = calc_bound(unit, 1, 250); // trader_amount_bought is an unsigned char
 
     return unit;
 }

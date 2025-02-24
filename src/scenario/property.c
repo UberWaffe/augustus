@@ -172,3 +172,23 @@ void scenario_change_climate(scenario_climate climate)
     scenario.climate = climate;
     image_load_climate(scenario_property_climate(), 0, 0, 0);
 }
+
+int scenario_get_land_trade_units_multiplier(void)
+{
+    return scenario.trade_modifiers.land_trade_units_multiplier;
+}
+
+int scenario_get_sea_trade_units_multiplier(void)
+{
+    return scenario.trade_modifiers.sea_trade_units_multiplier;
+}
+
+void scenario_set_land_trade_units_multiplier(int value)
+{
+    scenario.trade_modifiers.land_trade_units_multiplier = calc_bound(value, 1, 3000);
+}
+
+void scenario_set_sea_trade_units_multiplier(int value)
+{
+    scenario.trade_modifiers.sea_trade_units_multiplier = calc_bound(value, 1, 3000);
+}

@@ -94,6 +94,8 @@ int scenario_action_type_execute(scenario_action_t *action)
             return scenario_action_type_change_climate_execute(action);
         case ACTION_TYPE_CHANGE_SENTIMENT:
             return scenario_action_type_change_sentiment_execute(action);
+        case ACTION_TYPE_CHANGE_TRADE_MULTIPLIER:
+            return scenario_action_type_change_trade_multiplier_execute(action);
         default:
             return 0;
     }

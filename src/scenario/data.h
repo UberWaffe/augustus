@@ -107,6 +107,11 @@ extern struct scenario_t {
     } random_events;
 
     struct {
+        int land_trade_units_multiplier;
+        int sea_trade_units_multiplier;
+    } trade_modifiers;
+
+    struct {
         int width;
         int height;
         int grid_start;

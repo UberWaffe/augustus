@@ -284,6 +284,11 @@ static scenario_action_data_t scenario_action_data[ACTION_TYPE_MAX] = {
                                         .xml_attr = { .name = "change_sentiment",   .type = PARAMETER_TYPE_TEXT,      .key = TR_ACTION_TYPE_CHANGE_SENTIMENT },
                                         .xml_parm1 = { .name = "amount",            .type = PARAMETER_TYPE_NUMBER,    .min_limit = -100,  .max_limit = 100,   .key = TR_PARAMETER_TYPE_NUMBER },
                                         .xml_parm2 = { .name = "set_to_value",      .type = PARAMETER_TYPE_BOOLEAN,   .min_limit = 0,     .max_limit = 1,     .key = TR_PARAMETER_SET_TO_VALUE }, },
+    [ACTION_TYPE_CHANGE_TRADE_MULTIPLIER] = { .type = ACTION_TYPE_CHANGE_TRADE_MULTIPLIER,
+                                        .xml_attr = { .name = "change_trade_cargo_multiplier",   .type = PARAMETER_TYPE_TEXT,      .key = TR_ACTION_TYPE_CHANGE_TRADE_MULTIPLIER },
+                                        .xml_parm1 = { .name = "amount",            .type = PARAMETER_TYPE_NUMBER,    .min_limit = 1,     .max_limit = 3000,  .key = TR_PARAMETER_TYPE_NUMBER },
+                                        .xml_parm2 = { .name = "affects_land",      .type = PARAMETER_TYPE_BOOLEAN,   .min_limit = 0,     .max_limit = 1,     .key = TR_PARAMETER_AFFECTS_LAND },
+                                        .xml_parm3 = { .name = "affects_sea",       .type = PARAMETER_TYPE_BOOLEAN,   .min_limit = 0,     .max_limit = 1,     .key = TR_PARAMETER_AFFECTS_SEA }, },
 };
 
 scenario_action_data_t *scenario_events_parameter_data_get_actions_xml_attributes(action_types type)
@@ -1210,6 +1215,13 @@ void scenario_events_parameter_data_get_display_string_for_action(const scenario
             {
                 result_text = translation_for_set_or_add_text(action->parameter2, result_text, &maxlength);
                 result_text = translation_for_min_max_values(action->parameter1, action->parameter2, result_text, &maxlength);
+                return;
+            }
+        case ACTION_TYPE_CHANGE_TRADE_MULTIPLIER:
+            {
+                result_text = translation_for_min_max_values(action->parameter1, action->parameter2, result_text, &maxlength);
+                result_text = translation_for_boolean_text(action->parameter2, TR_PARAMETER_DOES_AFFECT_LAND, TR_PARAMETER_DOES_NOT_AFFECT_LAND, result_text, &maxlength);
+                result_text = translation_for_boolean_text(action->parameter3, TR_PARAMETER_DOES_AFFECT_SEA, TR_PARAMETER_DOES_NOT_AFFECT_SEA, result_text, &maxlength);
                 return;
             }
         default:
